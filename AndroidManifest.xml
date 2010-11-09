@@ -3,23 +3,32 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	package="cat.pirata"
 	android:versionCode="1"
-	android:versionName="1.0" >
+	android:versionName="1.0">
 	<application
 		android:icon="@drawable/icon48"
-		android:label="@string/partit_name_long"
+		android:label="@string/app_name"
 		android:debuggable="true" 
 		android:theme="@android:style/Theme.NoTitleBar" >
-		<activity android:name=".PartitPirata" android:label="@string/partit_name_long" android:screenOrientation="portrait">
+		
+		<activity android:name=".PartitPirata" android:label="@string/app_name" android:screenOrientation="portrait">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+		
 		<activity android:name="cat.pirata.activities.InfoActivity" android:label="@string/app_name" />
 		<activity android:name="cat.pirata.activities.IdeatorrentActivity" android:label="@string/app_name" android:screenOrientation="portrait" />
 		<activity android:name="cat.pirata.activities.CalendariActivity" android:label="@string/app_name" android:screenOrientation="portrait" />
 
+    	<receiver android:name="cat.pirata.widget.WidgetProvider" >
+    		<intent-filter>
+    			<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+    		</intent-filter>
+    		<meta-data android:name="android.appwidget.provider" android:resource="@xml/widgetproviderinfo" />
+    	</receiver>
 	</application>
+	
 	<uses-sdk android:minSdkVersion="8" />
 	<uses-permission android:name = "android.permission.INTERNET" />
 </manifest>
