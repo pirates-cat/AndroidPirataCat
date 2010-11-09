@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="author">Sergio Arcos Sebastián</string>
+    <string name="license">GPL</string>
+    <string name="version">beta?</string>
+    <string name="hello">Hello World, pirates!</string>
+    
+    <string name="app_name">Pirates de Catalunya</string>
+    <string name="partit_name_long">Partit Pirata</string>
+    <string name="partit_name_short">PIRATA.CAT</string>
+    
+    <string name="filtrar">Filtrar llistes</string>
+    <string name="sortir">Sortir</string>
+</resources>
