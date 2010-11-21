@@ -1,14 +1,7 @@
 
 * Developed under 2.2, but it should work in 2.x or under
+* Set android:minSdkVersion="5", but you should test in above versions and report me it :)
 
-* FUNCTIONS:
- - database
- - getRss (simple atom)
- - 2 tabs
- - contextual menu
- -
+* No more race condition errors. It's useful now! (progress bar + welcome)
 
-* TODO:
- - widget
- -
- - a lot more :)
+* Working in the Widget and the IdeaTorrent

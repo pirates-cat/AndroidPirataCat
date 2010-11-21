@@ -19,12 +19,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -58,11 +60,14 @@ public class InfoActivity extends ListActivity {
 			@Override
 			public void handleMessage(Message msg) {
 				setListAdapter(new BlocAdapter());
-				Log.d(" ", "--FIN--");
+				ProgressBar pb = (ProgressBar)getParent().findViewById(R.id.progressbar);
+				pb.setVisibility(Window.PROGRESS_VISIBILITY_OFF);
+				Log.d("", "--FIN--");
 			}
 		};
 		setListAdapter(new BlocAdapter());
 		getListView().setOnItemClickListener(new openUrlListener());
+		firstTimeDialog();
 	}
 
 	@Override
@@ -84,10 +89,15 @@ public class InfoActivity extends ListActivity {
 
 		Thread background = new Thread(new Runnable() {
 			public void run() {
-				rss.refreshLastNews();
-				cr.requery();
-				rss.clearOldNews();
-				hr.sendMessage(hr.obtainMessage());
+				try {
+					rss.refreshLastNews();
+					cr.requery();
+					rss.clearOldNews();
+					hr.sendMessage(hr.obtainMessage());
+				} catch (IllegalStateException e) {
+					// race condition !!
+					return;
+				}
 			}
 		});
 		background.start();
@@ -136,6 +146,20 @@ public class InfoActivity extends ListActivity {
 		}
 	}
 
+
+	private void firstTimeDialog() {
+		if (db.isFirstTime()) {
+			dialog = new Dialog(getParent());
+			dialog.setContentView(R.layout.info_dialog_firsttime);
+			dialog.setTitle(R.string.quisom);
+			Button button = (Button) dialog.findViewById(R.id.entrar);
+			button.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) { dialog.cancel(); }
+			});
+			dialog.show();
+		}
+	}
+
 	private void configDialog() {
 		dialog = new Dialog(this);
 		dialog.setContentView(R.layout.info_dialog_config);
@@ -179,7 +203,7 @@ public class InfoActivity extends ListActivity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Estas segur de sortir?")
 		.setCancelable(false)
-		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				//db.resetAllData();
 				InfoActivity.this.finish();

@@ -88,6 +88,21 @@ public class DbHelper {
 		cr.close();
 		return value;
 	}
+	
+	public boolean isFirstTime() {
+		String sql;
+		sql = "SELECT id FROM rss WHERE name='FirstTime'";
+		Cursor cr = db.rawQuery(sql, null);
+		boolean value = cr.moveToFirst();
+		cr.close();
+		if (value) {
+			sql = "DELETE FROM rss WHERE name='FirstTime'";
+			db.execSQL(sql);
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	// -MENUS-
 
@@ -106,6 +121,7 @@ public class DbHelper {
 			Log.d("DB", "onCreate");
 			String[] sqlBlock = new String[] {
 					"CREATE TABLE rss (id INT, lastAccess INTEGER, name TEXT, url TEXT, icon INT, enabled INT)",
+					"INSERT INTO rss (id, lastAccess, name, url, icon, enabled) VALUES (31337, 0, 'FirstTime', 'FirstTime', 0, 0)",
 					"INSERT INTO rss (id, lastAccess, name, url, icon, enabled) VALUES (0, 0, 'Bloc Pirata', 'http://pirata.cat/bloc/?feed=rss2',"+ R.drawable.ic_info_bloc +", 1)",
 					"INSERT INTO rss (id, lastAccess, name, url, icon, enabled) VALUES (1, 0, 'YouTube', 'http://gdata.youtube.com/feeds/base/users/PiratesdeCatalunyaTV/uploads?alt=rss&v=2&orderby=published',"+ R.drawable.ic_info_youtube +", 1)",
 					"INSERT INTO rss (id, lastAccess, name, url, icon, enabled) VALUES (2, 0, 'Flickr', 'http://api.flickr.com/services/feeds/groups_pool.gne?id=1529563@N23&lang=es-es&format=rss_200',"+ R.drawable.ic_info_flickr +", 1)",
