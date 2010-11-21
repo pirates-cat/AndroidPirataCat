@@ -19,7 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -61,7 +60,7 @@ public class InfoActivity extends ListActivity {
 			public void handleMessage(Message msg) {
 				setListAdapter(new BlocAdapter());
 				ProgressBar pb = (ProgressBar)getParent().findViewById(R.id.progressbar);
-				pb.setVisibility(Window.PROGRESS_VISIBILITY_OFF);
+				pb.setVisibility(View.INVISIBLE);
 				Log.d("", "--FIN--");
 			}
 		};
@@ -101,6 +100,8 @@ public class InfoActivity extends ListActivity {
 			}
 		});
 		background.start();
+		ProgressBar pb = (ProgressBar)getParent().findViewById(R.id.progressbar);
+		pb.setVisibility(View.VISIBLE);
 	}
 
 	@Override

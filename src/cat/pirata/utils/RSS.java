@@ -34,17 +34,13 @@ public class RSS {
 	public void refreshLastNews() {
 		Cursor cr = db.getRssEnabled();
 		do {
-			Long lastAccess = cr.getLong(cr.getColumnIndex("lastAccess"));
-			if (!isCached( System.currentTimeMillis(), lastAccess )) {
-				String url = cr.getString(cr.getColumnIndex("url"));
-				int id = cr.getInt(cr.getColumnIndex("id"));
-				String rss = downloadRSS(url);
-				if (rss != null) {
-					Log.d("<DOWNLOAD>", url);
-					db.updateFieldFromRSS(id, "lastAccess", System.currentTimeMillis());
-					Long lastTime = db.getLastStr(id);
-					parseRSS(id, rss, lastTime);
-				}
+			String url = cr.getString(cr.getColumnIndex("url"));
+			int id = cr.getInt(cr.getColumnIndex("id"));
+			String rss = downloadRSS(url);
+			if (rss != null) {
+				Log.d("<DOWNLOAD>", url);
+				Long lastTime = db.getLastStr(id);
+				parseRSS(id, rss, lastTime);
 			}
 		} while (cr.moveToNext());
 		cr.close();
@@ -59,18 +55,6 @@ public class RSS {
 
 
 	// -PRIVATE-
-
-	private boolean isCached(Long timeNow, Long timeLast) {
-		Calendar calNow = Calendar.getInstance();
-		Calendar calLast = Calendar.getInstance();
-
-		calNow.setTime(new Date( timeNow ));
-		calLast.setTime(new Date( timeLast ));
-		calLast.roll(Calendar.MINUTE, 10);
-
-		return  (calNow.after(calLast)) ? false : true;
-	}
-
 
 	private void parseRSS(int id, String rss, Long lastTime) {
 		int start, end = 0;
@@ -100,7 +84,7 @@ public class RSS {
 			URL myURL = new URL(url);
 			URLConnection ucon = myURL.openConnection();
 			InputStream is = ucon.getInputStream();
-			BufferedInputStream bis = new BufferedInputStream(is);
+			BufferedInputStream bis = new BufferedInputStream(is, 65535);
 			ByteArrayBuffer baf = new ByteArrayBuffer(65535);
 			int current = 0;
 			while((current = bis.read()) != -1) {

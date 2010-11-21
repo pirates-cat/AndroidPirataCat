@@ -10,7 +10,7 @@ import cat.pirata.R;
 public class DbHelper {
 
 	private static final String DATABASE_NAME = "PIRATACAT";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 436;
 
 	private SQLiteDatabase db;
 
@@ -34,14 +34,14 @@ public class DbHelper {
 	}
 
 	public Cursor getRssEnabled() {
-		String sql = "SELECT id,lastAccess,name,url,icon,enabled FROM rss WHERE enabled=1 LIMIT 100";
+		String sql = "SELECT id,name,url,icon,enabled FROM rss WHERE enabled=1 LIMIT 100";
 		Cursor cr = db.rawQuery(sql, null);
 		cr.moveToFirst();
 		return cr;
 	}
 
 	public Cursor getRssAll() {
-		String sql = "SELECT id,lastAccess,name,url,icon,enabled FROM rss LIMIT 100";
+		String sql = "SELECT id,name,url,icon,enabled FROM rss LIMIT 100";
 		Cursor cr = db.rawQuery(sql, null);
 		cr.moveToFirst();
 		return cr;
@@ -53,10 +53,6 @@ public class DbHelper {
 		db.execSQL(sql);
 	}
 
-	public void updateFieldFromRSS(int id, String field, Long timeInMillis) {
-		String sql = "UPDATE rss SET " + field + "=" + timeInMillis + " WHERE id=" + id;
-		db.execSQL(sql);
-	}
 
 	public Long getLastStr(int id) {
 		String sql = "SELECT lastAccess FROM row WHERE id=" + id + " ORDER BY lastAccess DESC LIMIT 1";
@@ -90,18 +86,16 @@ public class DbHelper {
 	}
 	
 	public boolean isFirstTime() {
-		String sql;
-		sql = "SELECT id FROM rss WHERE name='FirstTime'";
+		String sql = "SELECT value FROM config WHERE key='FirstTime'";
 		Cursor cr = db.rawQuery(sql, null);
-		boolean value = cr.moveToFirst();
+		int value = (cr.moveToFirst()) ? cr.getInt(cr.getColumnIndex("value")) : -1;
 		cr.close();
-		if (value) {
-			sql = "DELETE FROM rss WHERE name='FirstTime'";
+		if (value==1) {
+			sql = "UPDATE config SET value=0 WHERE key='FirstTime'";
 			db.execSQL(sql);
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	// -MENUS-
@@ -120,12 +114,15 @@ public class DbHelper {
 		public void onCreate(SQLiteDatabase db) {
 			Log.d("DB", "onCreate");
 			String[] sqlBlock = new String[] {
-					"CREATE TABLE rss (id INT, lastAccess INTEGER, name TEXT, url TEXT, icon INT, enabled INT)",
-					"INSERT INTO rss (id, lastAccess, name, url, icon, enabled) VALUES (31337, 0, 'FirstTime', 'FirstTime', 0, 0)",
-					"INSERT INTO rss (id, lastAccess, name, url, icon, enabled) VALUES (0, 0, 'Bloc Pirata', 'http://pirata.cat/bloc/?feed=rss2',"+ R.drawable.ic_info_bloc +", 1)",
-					"INSERT INTO rss (id, lastAccess, name, url, icon, enabled) VALUES (1, 0, 'YouTube', 'http://gdata.youtube.com/feeds/base/users/PiratesdeCatalunyaTV/uploads?alt=rss&v=2&orderby=published',"+ R.drawable.ic_info_youtube +", 1)",
-					"INSERT INTO rss (id, lastAccess, name, url, icon, enabled) VALUES (2, 0, 'Flickr', 'http://api.flickr.com/services/feeds/groups_pool.gne?id=1529563@N23&lang=es-es&format=rss_200',"+ R.drawable.ic_info_flickr +", 1)",
-					"CREATE TABLE row (id INT, lastAccess INTEGER, body TEXT, followUrl TEXT)" 
+					"CREATE TABLE config (key TEXT, value INT)",
+					"INSERT INTO config (key, value) VALUES ('FirstTime', 1)",
+					"CREATE TABLE rss (id INT, name TEXT, url TEXT, icon INT, enabled INT)",
+					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (0, 'Bloc Pirata', 'http://pirata.cat/bloc/?feed=rss2',"+ R.drawable.ic_info_bloc +", 1)",
+					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (1, 'YouTube', 'http://gdata.youtube.com/feeds/base/users/PiratesdeCatalunyaTV/uploads?alt=rss&v=2&orderby=published',"+ R.drawable.ic_info_youtube +", 1)",
+					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (2, 'Flickr', 'http://api.flickr.com/services/feeds/groups_pool.gne?id=1529563@N23&lang=es-es&format=rss_200',"+ R.drawable.ic_info_flickr +", 1)",
+					"CREATE TABLE row (id INT, lastAccess INTEGER, body TEXT, followUrl TEXT)",
+					"CREATE TABLE idea (id INT)",
+					"INSERT INTO idea (id) VALUES (0)",
 			};
 
 			for (String sql : sqlBlock) { db.execSQL(sql); }
@@ -135,8 +132,10 @@ public class DbHelper {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			Log.d("DB", "onUpgrade");
 			String[] sqlBlock = new String[] {
+					"DROP TABLE IF EXISTS config",
 					"DROP TABLE IF EXISTS rss",
-					"DROP TABLE IF EXISTS row"
+					"DROP TABLE IF EXISTS row",
+					"DROP TABLE IF EXISTS idea"
 			};
 
 			for (String sql : sqlBlock) { db.execSQL(sql); }
