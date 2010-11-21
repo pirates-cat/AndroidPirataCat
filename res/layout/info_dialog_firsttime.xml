@@ -34,4 +34,11 @@
 		android:layout_height="wrap_content"
 		android:text="@string/entrar"
 		android:gravity="center_vertical" />
+
+	<TextView
+	   	android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:gravity="right"
+		android:text="@string/sourcecode"
+		android:textSize="10sp" />
 </LinearLayout>

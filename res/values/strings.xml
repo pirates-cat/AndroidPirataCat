@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="author">Sergio Arcos Sebastián</string>
+	<string name="author">Sergio Arcos</string>
+	<string name="sourcecode">https://github.com/m13/AndroidPirataCat</string>
     <string name="license">GPL</string>
     <string name="version">beta?</string>
     <string name="hello">Hello World, pirates!</string>

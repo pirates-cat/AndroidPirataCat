@@ -1,7 +1,14 @@
 
-* Developed under 2.2, but it should work in 2.x or under
-* Set android:minSdkVersion="5", but you should test in above versions and report me it :)
+WARNING:
+* Developed under android 2.2, but it should work in 2.1 and 1.x
+* android:minSdkVersion="1"
 
-* No more race condition errors. It's useful now! (progress bar + welcome)
+TODO:
+* Redesign images and refactor the names of the sources
+* IdeaTorrent
 
-* Working in the Widget and the IdeaTorrent
+PLEASE:
+* Report me errors,
+* give me feedback,
+* suggest me new features,
+* WHATEVER

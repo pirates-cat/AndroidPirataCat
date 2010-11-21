@@ -1,15 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical"
+
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:background="@drawable/widget_background"
-	>
-	<TextView
-		android:id="@+id/level"
+	android:padding="20sp" >
+
+	<ImageView 
+		android:id="@+id/widget_icon"
+		android:layout_width="20sp"
+		android:layout_height="20sp"
+		android:layout_gravity="top" />
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="200sp"
+		android:layout_height="fill_parent"
+		android:gravity="center_vertical"
+		android:paddingLeft="4sp"
+		android:paddingRight="4sp" >
+		<TextView
+			android:id="@+id/widget_text1"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top"
+			android:textSize="14sp"
+			android:textColor="#111" />
+		<TextView
+			android:id="@+id/widget_text2"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom"
+			android:textSize="10sp"
+			android:textColor="#444" />
+		<TextView
+			android:id="@+id/widget_text3"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_gravity="bottom"
+			android:textSize="10sp"
+			android:textColor="#444" />
+	</LinearLayout>
+	
+	<ImageButton
+		android:id="@+id/widget_button"
+		android:clickable="true"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-	    android:textColor="#000000"
-	    android:gravity="center"
-	/>
+		android:src="@drawable/icon32" />
 </LinearLayout>
+	

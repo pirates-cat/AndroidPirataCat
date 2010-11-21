@@ -10,7 +10,7 @@ import cat.pirata.R;
 public class DbHelper {
 
 	private static final String DATABASE_NAME = "PIRATACAT";
-	private static final int DATABASE_VERSION = 436;
+	private static final int DATABASE_VERSION = 4;
 
 	private SQLiteDatabase db;
 
@@ -101,6 +101,15 @@ public class DbHelper {
 	// -MENUS-
 
 
+	
+	// -WIDGET-
+	
+	public Cursor getLastRow() {
+		String sql = "SELECT id,lastAccess,body,followUrl FROM row ORDER BY lastAccess DESC LIMIT 1";
+		Cursor cr = db.rawQuery(sql, null);
+		cr.moveToFirst();		
+		return cr;
+	}
 
 	// -CLASS-
 

@@ -46,7 +46,7 @@ public class InfoActivity extends ListActivity {
 	private Dialog dialog;
 
 
-	// -PROTECTED-
+	// -FLOW-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class InfoActivity extends ListActivity {
 			@Override
 			public void handleMessage(Message msg) {
 				setListAdapter(new BlocAdapter());
-				ProgressBar pb = (ProgressBar)getParent().findViewById(R.id.progressbar);
+				ProgressBar pb = (ProgressBar) getParent().findViewById(R.id.progressbar);
 				pb.setVisibility(View.INVISIBLE);
 				Log.d("", "--FIN--");
 			}
@@ -100,7 +100,7 @@ public class InfoActivity extends ListActivity {
 			}
 		});
 		background.start();
-		ProgressBar pb = (ProgressBar)getParent().findViewById(R.id.progressbar);
+		ProgressBar pb = (ProgressBar) getParent().findViewById(R.id.progressbar);
 		pb.setVisibility(View.VISIBLE);
 	}
 
