@@ -10,7 +10,7 @@ import cat.pirata.R;
 public class DbHelper {
 
 	private static final String DATABASE_NAME = "PIRATACAT";
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 6;
 
 	private SQLiteDatabase db;
 
@@ -55,7 +55,8 @@ public class DbHelper {
 
 
 	public Long getLastStr(int id) {
-		String sql = "SELECT lastAccess FROM row WHERE id=" + id + " ORDER BY lastAccess DESC LIMIT 1";
+		// WARNING: ORDER BY what? DESC -> damn flickr
+		String sql = "SELECT lastAccess FROM row WHERE id=" + id + " ORDER BY id DESC LIMIT 1";
 		Cursor cr = db.rawQuery(sql, null);
 		Long lastAccess =  (cr.moveToFirst()) ? cr.getLong(cr.getColumnIndex("lastAccess")) : 0L;
 		cr.close();
