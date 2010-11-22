@@ -3,12 +3,12 @@
 	<string name="author">Sergio Arcos</string>
 	<string name="sourcecode">https://github.com/m13/AndroidPirataCat</string>
     <string name="license">GPL</string>
-    <string name="version">beta?</string>
+    <string name="version">1.0.8</string>
     <string name="hello">Hello World, pirates!</string>
     
     <string name="app_name">Pirates de Catalunya</string>
-    <string name="partit_name_long">Partit Pirata</string>
-    <string name="partit_name_short">PIRATA.CAT</string>
+    <string name="partit_nom_llarg">Pirates de Catalunya</string>
+    <string name="partit_nom_curt">PIRATA.CAT</string>
     
     <string name="filtrar">Filtrar llistes</string>
     <string name="sortir">Sortir</string>
@@ -17,5 +17,9 @@
     <string name="benvinguda1">Els Pirates de Catalunya (PIRATA.CAT) defensem el teu dret a dir i decidir allò que fa el govern.</string>
 	<string name="benvinguda2">\nDefensem la teva privacitat, impulsem la societat de la informació i l\'accés a la cultura i al coneixement: requisits imprescindibles per a poder viure en llibertat i democràcia. Per això ens presentem a les properes eleccions del 28 de Novembre.</string>
 	<string name="benvinguda3">\nProu de promeses de canvi que no canvien res! Ajuda\'ns a canviar el joc!\n</string>
-    
+    <string name="novaversio">Nova versió! No oblidis reportar els bugs!</string>
+    <string name="selectrss">Selecciona els RSS</string>
+    <string name="segursortir">Estas segur de sortir?</string>
+    <string name="si">Sí</string>
+    <string name="no">No</string>
 </resources>

@@ -19,8 +19,11 @@ import android.util.Log;
 
 public class RSS {
 
+	public static final int numMonthsOfOldNews = -1;
+	
 	private DbHelper db;
 
+	
 	// -PUBLIC-
 
 	public RSS(DbHelper db) {
@@ -49,7 +52,7 @@ public class RSS {
 	public void clearOldNews() {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date( System.currentTimeMillis() ));
-		cal.roll(Calendar.MONTH, -1);
+		cal.roll(Calendar.MONTH, numMonthsOfOldNews);
 		db.clearOldNews( cal.getTimeInMillis() );
 	}
 

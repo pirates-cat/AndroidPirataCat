@@ -164,7 +164,7 @@ public class InfoActivity extends ListActivity {
 	private void configDialog() {
 		dialog = new Dialog(this);
 		dialog.setContentView(R.layout.info_dialog_config);
-		dialog.setTitle("Selecciona els RSS");
+		dialog.setTitle("@string/selectrss");
 
 		Cursor cur = db.getRssAll();
 		do {
@@ -202,15 +202,15 @@ public class InfoActivity extends ListActivity {
 
 	private void quitDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Estas segur de sortir?")
+		builder.setMessage("@string/segursortir")
 		.setCancelable(false)
-		.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		.setPositiveButton("@string/si", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				//db.resetAllData();
 				InfoActivity.this.finish();
 			}
 		})
-		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		.setNegativeButton("@string/no", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.cancel();
 			}

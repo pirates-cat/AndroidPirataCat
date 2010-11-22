@@ -10,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.widget.RemoteViews;
 import cat.pirata.PartitPirata;
 import cat.pirata.R;
@@ -17,8 +18,9 @@ import cat.pirata.utils.DbHelper;
 
 
 public class WidgetProvider extends AppWidgetProvider {
-	
+
 	private DbHelper db;
+	
 	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -33,12 +35,13 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void updateWidget(Context context){
 		RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.widget);
 		Cursor cr = db.getLastRow();
+		String followUrl = "@string/sourcecode";
 		if (cr.moveToFirst()) {
 			int id = cr.getInt(cr.getColumnIndex("id"));
 			int icon = db.getIcon(id);
 			long lastAccess = cr.getLong(cr.getColumnIndex("lastAccess"));
 			String body = cr.getString(cr.getColumnIndex("body"));
-			String followUrl = cr.getString(cr.getColumnIndex("followUrl"));
+			followUrl = cr.getString(cr.getColumnIndex("followUrl"));
 			
 			updateViews.setImageViewResource(R.id.widget_icon, icon);
 			updateViews.setTextViewText(R.id.widget_text1, body);
@@ -49,9 +52,15 @@ public class WidgetProvider extends AppWidgetProvider {
 		}
 		cr.close();	
 		
-        Intent defineIntent = new Intent(context, PartitPirata.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,  0 , defineIntent, 0 );
+        Intent intent = new Intent(context, PartitPirata.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         updateViews.setOnClickPendingIntent(R.id.widget_button, pendingIntent);
+        
+        Uri uri = Uri.parse(followUrl);
+        intent = new Intent(Intent.ACTION_VIEW, uri);
+        pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        updateViews.setOnClickPendingIntent(R.id.widget_llayout, pendingIntent);
+     
 
 		ComponentName myComponentName = new ComponentName(context, WidgetProvider.class);
 		AppWidgetManager manager = AppWidgetManager.getInstance(context);

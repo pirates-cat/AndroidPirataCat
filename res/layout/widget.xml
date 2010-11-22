@@ -2,6 +2,7 @@
 
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/widget_llayout"
 	android:orientation="horizontal"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
@@ -26,7 +27,8 @@
 			android:layout_height="wrap_content"
 			android:layout_gravity="top"
 			android:textSize="14sp"
-			android:textColor="#111" />
+			android:textColor="#111"
+			android:text="@string/novaversio" />
 		<TextView
 			android:id="@+id/widget_text2"
 			android:layout_width="fill_parent"
@@ -40,7 +42,8 @@
 			android:layout_height="fill_parent"
 			android:layout_gravity="bottom"
 			android:textSize="10sp"
-			android:textColor="#444" />
+			android:textColor="#444"
+			android:text="@string/sourcecode" />
 	</LinearLayout>
 	
 	<ImageButton
