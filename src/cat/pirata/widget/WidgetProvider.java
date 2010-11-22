@@ -10,7 +10,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.widget.RemoteViews;
 import cat.pirata.PartitPirata;
 import cat.pirata.R;
@@ -25,9 +24,9 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		db = new DbHelper(context);
-		// -- no auto-updates
-		// RSS rss = new RSS(db);
-		// rss.refreshLastNews();
+// -- no auto-updates
+//		RSS rss = new RSS(db);
+//		rss.refreshLastNews();
 		updateWidget(context);
 		db.close();
 	}
@@ -35,7 +34,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void updateWidget(Context context){
 		RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.widget);
 		Cursor cr = db.getLastRow();
-		String followUrl = "@string/sourcecode";
+		String followUrl = context.getResources().getString(R.string.sourcecode);
 		if (cr.moveToFirst()) {
 			int id = cr.getInt(cr.getColumnIndex("id"));
 			int icon = db.getIcon(id);
@@ -56,10 +55,11 @@ public class WidgetProvider extends AppWidgetProvider {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         updateViews.setOnClickPendingIntent(R.id.widget_button, pendingIntent);
         
-        Uri uri = Uri.parse(followUrl);
-        intent = new Intent(Intent.ACTION_VIEW, uri);
-        pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        updateViews.setOnClickPendingIntent(R.id.widget_llayout, pendingIntent);
+// -- should?
+//		Uri uri = Uri.parse(followUrl);
+//		intent = new Intent(Intent.ACTION_VIEW, uri);
+//		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+//		updateViews.setOnClickPendingIntent(R.id.widget_llayout, pendingIntent);
      
 
 		ComponentName myComponentName = new ComponentName(context, WidgetProvider.class);

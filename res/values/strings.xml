@@ -17,9 +17,24 @@
     <string name="benvinguda1">Els Pirates de Catalunya (PIRATA.CAT) defensem el teu dret a dir i decidir allò que fa el govern.</string>
 	<string name="benvinguda2">\nDefensem la teva privacitat, impulsem la societat de la informació i l\'accés a la cultura i al coneixement: requisits imprescindibles per a poder viure en llibertat i democràcia. Per això ens presentem a les properes eleccions del 28 de Novembre.</string>
 	<string name="benvinguda3">\nProu de promeses de canvi que no canvien res! Ajuda\'ns a canviar el joc!\n</string>
-    <string name="novaversio">Nova versió! No oblidis reportar els bugs!</string>
-    <string name="selectrss">Selecciona els RSS</string>
+    <string name="novaversio">Nova versió instalada! No oblidis reportar els bugs!</string>
     <string name="segursortir">Estas segur de sortir?</string>
     <string name="si">Sí</string>
     <string name="no">No</string>
+    <string name="afegir">Afegir llista</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="esborrar">Esborrar llista</string>
+    <string name="selectrssesborrar">Selecciona els RSS a esborrar</string>
+    <string name="selectrss">Selecciona els RSS</string>
+    <string name="nomrss">Nom RSS</string>
+    <string name="direccio">Direcció</string>
+    <string name="icon">Icone</string>
+    <string name="escogeix">Escogeix icone</string>
+    <string-array name="icon_array">
+        <item>vermell</item>
+        <item>groc</item>
+        <item>verd</item>
+        <item>star</item>
+    </string-array>
+    
 </resources>

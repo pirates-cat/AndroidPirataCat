@@ -24,9 +24,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import cat.pirata.R;
@@ -36,7 +38,7 @@ import cat.pirata.utils.RSS;
 
 public class InfoActivity extends ListActivity {
 
-	public static final int numLastNews = 50;
+	public static final int numLastNews = 100;
 
 	private RSS rss;
 	private Handler hr;
@@ -136,6 +138,12 @@ public class InfoActivity extends ListActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.afegir:
+			afegirDialog();
+			return true;
+		case R.id.esborrar:
+			esborrarDialog();
+			return true;
 		case R.id.config:
 			configDialog();
 			return true;
@@ -160,11 +168,91 @@ public class InfoActivity extends ListActivity {
 			dialog.show();
 		}
 	}
+	
+
+	private void afegirDialog() {
+		dialog = new Dialog(this);
+		dialog.setContentView(R.layout.info_dialog_afegir);
+		dialog.setTitle(R.string.afegir);
+		
+	    Spinner spinner = (Spinner) dialog.findViewById(R.id.spinner);
+	    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+	            this, R.array.icon_array, android.R.layout.simple_spinner_item);
+	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    spinner.setAdapter(adapter);
+		
+		Button button = (Button) dialog.findViewById(R.id.afegir);
+		button.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				dialog.cancel();
+				EditText nomrss = (EditText) dialog.findViewById(R.id.nomrss);
+				EditText urlrss = (EditText) dialog.findViewById(R.id.direccio);
+				Spinner spinner = (Spinner) dialog.findViewById(R.id.spinner);
+				
+				db.insertRSS(nomrss.getText().toString(), urlrss.getText().toString(), spinner.getSelectedItemPosition());
+				
+				rss.refreshLastNews();
+				cr.requery();
+				getListView().invalidateViews();
+			}
+		});
+		
+		button = (Button) dialog.findViewById(R.id.cancelar);
+		button.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				dialog.cancel();
+			}
+		});
+		
+
+
+		dialog.show();
+	}
+	
+	private void esborrarDialog() {
+		dialog = new Dialog(this);
+		dialog.setContentView(R.layout.info_dialog_config);
+		dialog.setTitle(R.string.selectrssesborrar);
+
+		Cursor cur = db.getRssAll();
+		do {
+			int id = cur.getInt(cur.getColumnIndex("id"));
+			String name = cur.getString(cur.getColumnIndex("name"));
+
+			RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.radio);
+			CheckBox cb = new CheckBox(this);
+			cb.setId(id);
+			cb.setText(name);
+			cb.setChecked(false);
+			rg.addView(cb);
+
+		} while (cur.moveToNext());
+		cur.close();
+
+		Button button = (Button) dialog.findViewById(R.id.load);
+		button.setText(R.string.esborrar);
+		button.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				dialog.cancel();
+				RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.radio);
+				for (int i = 0; i<rg.getChildCount(); i++) {
+					CheckBox cb = (CheckBox) rg.getChildAt(i);
+					if (cb.isChecked()) {
+						db.deleteRSS(cb.getId());
+					}
+				}
+				cr.requery();
+				getListView().invalidateViews();
+			}
+		});
+
+		dialog.show();
+	}
 
 	private void configDialog() {
 		dialog = new Dialog(this);
 		dialog.setContentView(R.layout.info_dialog_config);
-		dialog.setTitle("@string/selectrss");
+		dialog.setTitle(R.string.selectrss);
 
 		Cursor cur = db.getRssAll();
 		do {
@@ -202,15 +290,15 @@ public class InfoActivity extends ListActivity {
 
 	private void quitDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("@string/segursortir")
+		builder.setMessage(R.string.segursortir)
 		.setCancelable(false)
-		.setPositiveButton("@string/si", new DialogInterface.OnClickListener() {
+		.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				//db.resetAllData();
 				InfoActivity.this.finish();
 			}
 		})
-		.setNegativeButton("@string/no", new DialogInterface.OnClickListener() {
+		.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.cancel();
 			}
@@ -235,7 +323,6 @@ public class InfoActivity extends ListActivity {
 			}
 		}
 	}
-
 
 	class BlocAdapter extends ArrayAdapter<String> {
 		BlocAdapter() { super(InfoActivity.this, R.layout.info_row); }

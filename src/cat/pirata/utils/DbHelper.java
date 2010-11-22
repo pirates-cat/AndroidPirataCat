@@ -10,7 +10,7 @@ import cat.pirata.R;
 public class DbHelper {
 
 	private static final String DATABASE_NAME = "PIRATACAT";
-	private static final int DATABASE_VERSION = 8;
+	private static final int DATABASE_VERSION = 9;
 
 	private SQLiteDatabase db;
 
@@ -63,7 +63,7 @@ public class DbHelper {
 		return lastAccess;
 	}
 
-	public void updateAllFieldsFromRow(int id, Long lastAccess, String body, String followUrl) {
+	public void insertRow(int id, Long lastAccess, String body, String followUrl) {
 		String sql = "INSERT INTO row (id, lastAccess, body, followUrl) VALUES ("+id+", "+lastAccess+", ?,?)";
 		db.execSQL(sql, new String[]{ body, followUrl });
 	}
@@ -102,13 +102,43 @@ public class DbHelper {
 	// -MENUS-
 
 
+	public void deleteRSS(int id) {
+		// we will have at least the bloc pirata :)
+		if (id!=0) {
+			String sql = "DELETE FROM rss WHERE id=" + id;
+			db.execSQL(sql);
+		}
+	}
+	
+	public void insertRSS(String nom, String url, int icon) {
+		
+		String sql = "SELECT value FROM config WHERE key='ID'";
+		Cursor cr = db.rawQuery(sql, null);
+		int id = (cr.moveToFirst()) ? cr.getInt(cr.getColumnIndex("value")) : -1;
+		cr.close();
+		if (id!=-1) {
+			sql = "UPDATE config SET value="+(id+1)+" WHERE key='ID'";
+			db.execSQL(sql);
+		} else { return; }
+		
+		int idIcon = 0;
+		switch (icon) {
+			case 0:	idIcon = R.drawable.ic_ic_vermell; break;
+			case 1:	idIcon = R.drawable.ic_ic_groc; break;
+			case 2:	idIcon = R.drawable.ic_ic_verd; break;
+			case 3:	idIcon = R.drawable.ic_ic_star; break;
+		}
+		
+		sql = "INSERT INTO rss (id, name, url, icon, enabled) VALUES ("+id+", ?, ?, "+idIcon+", 1)";
+		db.execSQL(sql, new String[]{ nom, url });
+	}
 	
 	// -WIDGET-
 	
 	public Cursor getLastRow() {
 		String sql = "SELECT id,lastAccess,body,followUrl FROM row ORDER BY lastAccess DESC LIMIT 1";
 		Cursor cr = db.rawQuery(sql, null);
-		cr.moveToFirst();		
+		cr.moveToFirst();
 		return cr;
 	}
 
@@ -126,10 +156,12 @@ public class DbHelper {
 			String[] sqlBlock = new String[] {
 					"CREATE TABLE config (key TEXT, value INT)",
 					"INSERT INTO config (key, value) VALUES ('FirstTime', 1)",
+					"INSERT INTO config (key, value) VALUES ('ID', 4)",
 					"CREATE TABLE rss (id INT, name TEXT, url TEXT, icon INT, enabled INT)",
 					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (0, 'Bloc Pirata', 'http://pirata.cat/bloc/?feed=rss2',"+ R.drawable.ic_info_bloc +", 1)",
 					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (1, 'YouTube', 'http://gdata.youtube.com/feeds/base/users/PiratesdeCatalunyaTV/uploads?alt=rss&v=2&orderby=published',"+ R.drawable.ic_info_youtube +", 1)",
 					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (2, 'Flickr', 'http://api.flickr.com/services/feeds/groups_pool.gne?id=1529563@N23&lang=es-es&format=rss_200',"+ R.drawable.ic_info_flickr +", 1)",
+					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (3, 'PPInternational', 'http://www.pp-international.net/rss.xml',"+ R.drawable.ic_info_ppinternational +", 1)",
 					"CREATE TABLE row (id INT, lastAccess INTEGER, body TEXT, followUrl TEXT)",
 					"CREATE TABLE idea (id INT)",
 					"INSERT INTO idea (id) VALUES (0)",

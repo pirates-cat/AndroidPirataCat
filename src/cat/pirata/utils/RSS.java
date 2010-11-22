@@ -77,7 +77,7 @@ public class RSS {
 			if (StrpubDate.compareTo(StrlastTime)==0) {
 				return;
 			}
-			db.updateAllFieldsFromRow(id, pubDate, Html.fromHtml(value[0]).toString(), value[1]);
+			db.insertRow(id, pubDate, Html.fromHtml(value[0]).toString(), value[1]);
 			nextBlock = rss.indexOf("<item>", nextBlock+1);
 		}
 	}
