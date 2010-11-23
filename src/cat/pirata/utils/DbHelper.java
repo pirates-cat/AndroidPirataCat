@@ -10,7 +10,7 @@ import cat.pirata.R;
 public class DbHelper {
 
 	private static final String DATABASE_NAME = "PIRATACAT";
-	private static final int DATABASE_VERSION = 9;
+	private static final int DATABASE_VERSION = 10;
 
 	private SQLiteDatabase db;
 
@@ -56,7 +56,7 @@ public class DbHelper {
 
 	public Long getLastStr(int id) {
 		// WARNING: ORDER BY what? DESC -> damn flickr
-		String sql = "SELECT lastAccess FROM row WHERE id=" + id + " ORDER BY id DESC LIMIT 1";
+		String sql = "SELECT lastAccess FROM row WHERE id=" + id + " ORDER BY rowid ASC LIMIT 1";
 		Cursor cr = db.rawQuery(sql, null);
 		Long lastAccess =  (cr.moveToFirst()) ? cr.getLong(cr.getColumnIndex("lastAccess")) : 0L;
 		cr.close();
@@ -161,7 +161,7 @@ public class DbHelper {
 					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (0, 'Bloc Pirata', 'http://pirata.cat/bloc/?feed=rss2',"+ R.drawable.ic_info_bloc +", 1)",
 					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (1, 'YouTube', 'http://gdata.youtube.com/feeds/base/users/PiratesdeCatalunyaTV/uploads?alt=rss&v=2&orderby=published',"+ R.drawable.ic_info_youtube +", 1)",
 					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (2, 'Flickr', 'http://api.flickr.com/services/feeds/groups_pool.gne?id=1529563@N23&lang=es-es&format=rss_200',"+ R.drawable.ic_info_flickr +", 1)",
-					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (3, 'PPInternational', 'http://www.pp-international.net/rss.xml',"+ R.drawable.ic_info_ppinternational +", 1)",
+					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (3, 'PPInternational', 'http://www.pp-international.net/rss.xml',"+ R.drawable.ic_info_ppinternational +", 1)",					
 					"CREATE TABLE row (id INT, lastAccess INTEGER, body TEXT, followUrl TEXT)",
 					"CREATE TABLE idea (id INT)",
 					"INSERT INTO idea (id) VALUES (0)",
