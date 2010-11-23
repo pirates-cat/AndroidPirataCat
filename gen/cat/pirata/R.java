@@ -28,10 +28,11 @@ public final class R {
         public static final int ic_tab_ideatorrent_white=0x7f02000b;
         public static final int ic_tab_information_grey=0x7f02000c;
         public static final int ic_tab_information_white=0x7f02000d;
-        public static final int icon32=0x7f02000e;
-        public static final int icon48=0x7f02000f;
-        public static final int icon_error=0x7f020010;
-        public static final int widget_background=0x7f020011;
+        public static final int icon=0x7f02000e;
+        public static final int icon32=0x7f02000f;
+        public static final int icon48=0x7f020010;
+        public static final int icon_error=0x7f020011;
+        public static final int widget_background=0x7f020012;
     }
     public static final class id {
         public static final int afegir=0x7f080003;
