@@ -43,7 +43,8 @@ public class RSS {
 			if (rss != null) {
 				Log.d("<DOWNLOAD>", url);
 				Long lastTime = db.getLastStr(id);
-				parseRSS(id, rss, lastTime);
+				int numDownload = parseRSS(id, rss, lastTime);
+				Log.d("</DOWNLOAD>", String.valueOf(numDownload));
 			}
 		} while (cr.moveToNext());
 		cr.close();
@@ -59,7 +60,8 @@ public class RSS {
 
 	// -PRIVATE-
 
-	private void parseRSS(int id, String rss, Long lastTime) {
+	private int parseRSS(int id, String rss, Long lastTime) {
+		int ret = 0;
 		int start, end = 0;
 		int nextBlock = rss.indexOf("<item>", 0);
 		String[] title = new String[] { "title", "link", "pubDate" };
@@ -74,12 +76,19 @@ public class RSS {
 			Long pubDate = strDateToLong(value[2]);
 			String StrpubDate = String.valueOf(pubDate).trim();
 			String StrlastTime = String.valueOf(lastTime).trim();
+//			Log.d("<lastTime>", String.valueOf(StrpubDate));
+//			Log.d("<lastTime>", String.valueOf(StrlastTime));
 			if (StrpubDate.compareTo(StrlastTime)==0) {
-				return;
+				break;
+			}
+			if (ret==0) {
+				db.updateFieldFromRSS(id, "lastAccess", pubDate);
 			}
 			db.insertRow(id, pubDate, Html.fromHtml(value[0]).toString(), value[1]);
 			nextBlock = rss.indexOf("<item>", nextBlock+1);
+			ret++;
 		}
+		return ret;
 	}
 
 	public String downloadRSS(String url) {

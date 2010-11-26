@@ -10,7 +10,7 @@ import cat.pirata.R;
 public class DbHelper {
 
 	private static final String DATABASE_NAME = "PIRATACAT";
-	private static final int DATABASE_VERSION = 10;
+	private static final int DATABASE_VERSION = 11;
 
 	private SQLiteDatabase db;
 
@@ -34,14 +34,14 @@ public class DbHelper {
 	}
 
 	public Cursor getRssEnabled() {
-		String sql = "SELECT id,name,url,icon,enabled FROM rss WHERE enabled=1 LIMIT 100";
+		String sql = "SELECT id,name,lastAccess,url,icon,enabled FROM rss WHERE enabled=1 LIMIT 100";
 		Cursor cr = db.rawQuery(sql, null);
 		cr.moveToFirst();
 		return cr;
 	}
 
 	public Cursor getRssAll() {
-		String sql = "SELECT id,name,url,icon,enabled FROM rss LIMIT 100";
+		String sql = "SELECT id,name,lastAccess,url,icon,enabled FROM rss LIMIT 100";
 		Cursor cr = db.rawQuery(sql, null);
 		cr.moveToFirst();
 		return cr;
@@ -52,13 +52,18 @@ public class DbHelper {
 		String sql = "UPDATE rss SET " + field + "=" + enabled + " WHERE id=" + id;
 		db.execSQL(sql);
 	}
+	
+	public void updateFieldFromRSS(int id, String field, long lastAccess ) {
+		String sql = "UPDATE rss SET " + field + "=" + lastAccess + " WHERE id=" + id;
+		db.execSQL(sql);
+	}
 
 
 	public Long getLastStr(int id) {
 		// WARNING: ORDER BY what? DESC -> damn flickr
-		String sql = "SELECT lastAccess FROM row WHERE id=" + id + " ORDER BY rowid ASC LIMIT 1";
+		String sql = "SELECT lastAccess FROM rss WHERE id=" + id + " LIMIT 1";
 		Cursor cr = db.rawQuery(sql, null);
-		Long lastAccess =  (cr.moveToFirst()) ? cr.getLong(cr.getColumnIndex("lastAccess")) : 0L;
+		Long lastAccess = (cr.moveToFirst()) ? cr.getLong(cr.getColumnIndex("lastAccess")) : 0L;
 		cr.close();
 		return lastAccess;
 	}
@@ -111,7 +116,6 @@ public class DbHelper {
 	}
 	
 	public void insertRSS(String nom, String url, int icon) {
-		
 		String sql = "SELECT value FROM config WHERE key='ID'";
 		Cursor cr = db.rawQuery(sql, null);
 		int id = (cr.moveToFirst()) ? cr.getInt(cr.getColumnIndex("value")) : -1;
@@ -129,7 +133,7 @@ public class DbHelper {
 			case 3:	idIcon = R.drawable.ic_ic_star; break;
 		}
 		
-		sql = "INSERT INTO rss (id, name, url, icon, enabled) VALUES ("+id+", ?, ?, "+idIcon+", 1)";
+		sql = "INSERT INTO rss (id, name, lastAccess, url, icon, enabled) VALUES ("+id+", ?, 0, ?, "+idIcon+", 1)";
 		db.execSQL(sql, new String[]{ nom, url });
 	}
 	
@@ -157,11 +161,11 @@ public class DbHelper {
 					"CREATE TABLE config (key TEXT, value INT)",
 					"INSERT INTO config (key, value) VALUES ('FirstTime', 1)",
 					"INSERT INTO config (key, value) VALUES ('ID', 4)",
-					"CREATE TABLE rss (id INT, name TEXT, url TEXT, icon INT, enabled INT)",
-					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (0, 'Bloc Pirata', 'http://pirata.cat/bloc/?feed=rss2',"+ R.drawable.ic_info_bloc +", 1)",
-					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (1, 'YouTube', 'http://gdata.youtube.com/feeds/base/users/PiratesdeCatalunyaTV/uploads?alt=rss&v=2&orderby=published',"+ R.drawable.ic_info_youtube +", 1)",
-					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (2, 'Flickr', 'http://api.flickr.com/services/feeds/groups_pool.gne?id=1529563@N23&lang=es-es&format=rss_200',"+ R.drawable.ic_info_flickr +", 1)",
-					"INSERT INTO rss (id, name, url, icon, enabled) VALUES (3, 'PPInternational', 'http://www.pp-international.net/rss.xml',"+ R.drawable.ic_info_ppinternational +", 1)",					
+					"CREATE TABLE rss (id INT, name TEXT, lastAccess INTEGER, url TEXT, icon INT, enabled INT)",
+					"INSERT INTO rss (id, name, lastAccess, url, icon, enabled) VALUES (0, 'Bloc Pirata', 0, 'http://pirata.cat/bloc/?feed=rss2',"+ R.drawable.ic_info_bloc +", 1)",
+					"INSERT INTO rss (id, name, lastAccess, url, icon, enabled) VALUES (1, 'YouTube', 0, 'http://gdata.youtube.com/feeds/base/users/PiratesdeCatalunyaTV/uploads?alt=rss&v=2&orderby=published',"+ R.drawable.ic_info_youtube +", 1)",
+					"INSERT INTO rss (id, name, lastAccess, url, icon, enabled) VALUES (2, 'Flickr', 0, 'http://api.flickr.com/services/feeds/groups_pool.gne?id=1529563@N23&lang=es-es&format=rss_200',"+ R.drawable.ic_info_flickr +", 1)",
+					"INSERT INTO rss (id, name, lastAccess, url, icon, enabled) VALUES (3, 'PPInternational', 0, 'http://www.pp-international.net/rss.xml',"+ R.drawable.ic_info_ppinternational +", 1)",					
 					"CREATE TABLE row (id INT, lastAccess INTEGER, body TEXT, followUrl TEXT)",
 					"CREATE TABLE idea (id INT)",
 					"INSERT INTO idea (id) VALUES (0)",
