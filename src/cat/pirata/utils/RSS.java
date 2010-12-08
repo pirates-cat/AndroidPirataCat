@@ -62,7 +62,6 @@ public class RSS {
 		int time = db.getIdeaLastUpdate();
 		Log.d("1TIME", String.valueOf(time));
 		
-		//time = 1291666826;
 		String str = downloadRSS("http://192.168.1.5/export.php?time=" + String.valueOf(time));
 		db.ideaUpdate(str);
 		time = Integer.valueOf(String.format("%s", System.currentTimeMillis()).substring(0,10));

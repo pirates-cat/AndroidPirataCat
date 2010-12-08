@@ -3,6 +3,7 @@ package cat.pirata.activities;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -105,6 +106,7 @@ public class IdeaVoting extends Activity {
 			} while (crProp.moveToNext());
 		}
 		crProp.close();
+		ll.invalidate();
 	}
 
 	private void addViewSolucio(int pid, int sid, int votes, String title, String description) {
@@ -139,6 +141,7 @@ public class IdeaVoting extends Activity {
 		tv.setText(String.valueOf(pid));
 		
 		tv = (TextView) child.findViewById(R.id.pubDate);
+		Log.d("date", String.valueOf(pubDate));
 		tv.setText(String.format("%s %s", day(pubDate), calMonth(month(pubDate))));
 		
 		tv = (TextView) child.findViewById(R.id.title);
@@ -151,13 +154,13 @@ public class IdeaVoting extends Activity {
 	}
 	
 	private int day (int what) {
-		what -= 1244160000; // 40years
+		// what -= 1244160000; // 40years
 		for (int i = 24*3600; what >= i; what -= i);
 		return what % 30;
 	}
 	
 	private int month (int what) {
-		what -= 1244160000; // 40years
+		// what -= 1244160000; // 40years
 		for (int i = 30*24*3600; what >= i; what -= i);
 		return what % 12;
 	}
