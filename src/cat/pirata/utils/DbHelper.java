@@ -1,5 +1,9 @@
 package cat.pirata.utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,7 +14,7 @@ import cat.pirata.R;
 public class DbHelper {
 
 	private static final String DATABASE_NAME = "PIRATACAT";
-	private static final int DATABASE_VERSION = 11;
+	private static final int DATABASE_VERSION = 20;
 
 	private SQLiteDatabase db;
 
@@ -103,6 +107,70 @@ public class DbHelper {
 		}
 		return false;
 	}
+	
+	
+	public void ideaUpdate(String str) throws JSONException {
+		JSONObject json = new JSONObject(str);
+		//Log.d("JSON", json.toString(4));
+		
+		if (json.has("solucions")) {
+			JSONArray solucions = new JSONArray(json.getString("solucions"));
+			for (int i = 0; i < solucions.length(); i++) {
+				String sql = "INSERT INTO solucions (pid, sid, title, description, votes) VALUES (" +
+				solucions.getJSONObject(i).getString("pid") + ", " +
+				solucions.getJSONObject(i).getString("sid") + ", '" +
+				solucions.getJSONObject(i).getString("title").replace("'", "`") + "', '" +
+				solucions.getJSONObject(i).getString("description").replace("'", "`") + "', " +
+				solucions.getJSONObject(i).getString("votes") + ")";
+
+				Log.d("sql", sql);
+				db.execSQL(sql);
+			}
+		}
+		
+		if (json.has("propostes")) {
+			JSONArray propostes = new JSONArray(json.getString("propostes"));
+			for (int i = 0; i < propostes.length(); i++) {
+				String sql = "INSERT INTO propostes (status, pid, pubDate, title, description) VALUES ('" +
+				propostes.getJSONObject(i).getString("status") + "', " +
+				propostes.getJSONObject(i).getString("pid") + ", " +
+				propostes.getJSONObject(i).getString("pubDate") + ", '" +
+				propostes.getJSONObject(i).getString("title").replace("'", "`") + "', '" +
+				propostes.getJSONObject(i).getString("description").replace("'", "`") + "')";
+
+				Log.d("sql", sql);
+				db.execSQL(sql);
+			}
+		}
+	}
+	
+	public int getIdeaLastUpdate() {
+		String sql = "SELECT value FROM config WHERE key='LastUpdateIdea'";
+		Cursor cr = db.rawQuery(sql, null);
+		int value =  (cr.moveToFirst()) ? cr.getInt(cr.getColumnIndex("value")) : -1;
+		cr.close();
+		return value;
+	}
+
+	public void setIdeaLastUpdate(int time) {
+		String sql = "UPDATE config SET value="+String.valueOf(time)+" WHERE key='LastUpdateIdea'";
+		db.execSQL(sql);
+	}
+	
+	
+	public Cursor getPropostes(String status) {
+		String sql = "SELECT * FROM propostes WHERE status='"+status+"' ORDER BY pubDate DESC LIMIT 100";
+		Cursor cr = db.rawQuery(sql, null);
+		cr.moveToFirst();
+		return cr;
+	}
+	
+	public Cursor getSolucions(Integer pid) {
+		String sql = "SELECT * FROM solucions WHERE pid='"+String.valueOf(pid)+"' ORDER BY sid DESC LIMIT 100";
+		Cursor cr = db.rawQuery(sql, null);
+		cr.moveToFirst();
+		return cr;
+	}
 
 	// -MENUS-
 
@@ -160,6 +228,7 @@ public class DbHelper {
 			String[] sqlBlock = new String[] {
 					"CREATE TABLE config (key TEXT, value INT)",
 					"INSERT INTO config (key, value) VALUES ('FirstTime', 1)",
+					"INSERT INTO config (key, value) VALUES ('LastUpdateIdea', 1)",
 					"INSERT INTO config (key, value) VALUES ('ID', 4)",
 					"CREATE TABLE rss (id INT, name TEXT, lastAccess INTEGER, url TEXT, icon INT, enabled INT)",
 					"INSERT INTO rss (id, name, lastAccess, url, icon, enabled) VALUES (0, 'Bloc Pirata', 0, 'http://pirata.cat/bloc/?feed=rss2',"+ R.drawable.ic_info_bloc +", 1)",
@@ -167,8 +236,10 @@ public class DbHelper {
 					"INSERT INTO rss (id, name, lastAccess, url, icon, enabled) VALUES (2, 'Flickr', 0, 'http://api.flickr.com/services/feeds/groups_pool.gne?id=1529563@N23&lang=es-es&format=rss_200',"+ R.drawable.ic_info_flickr +", 1)",
 					"INSERT INTO rss (id, name, lastAccess, url, icon, enabled) VALUES (3, 'PPInternational', 0, 'http://www.pp-international.net/rss.xml',"+ R.drawable.ic_info_ppinternational +", 1)",					
 					"CREATE TABLE row (id INT, lastAccess INTEGER, body TEXT, followUrl TEXT)",
-					"CREATE TABLE idea (id INT)",
-					"INSERT INTO idea (id) VALUES (0)",
+					
+					"CREATE TABLE comentaris (pid INT, cid INT, pubDate INT, author TEXT, description TEXT)",
+					"CREATE TABLE propostes (status TEXT, pid INT, pubDate INT, title TEXT, description TEXT)",
+					"CREATE TABLE solucions (pid INT, sid INT, title TEXT, description TEXT, votes INT, voted INT DEFAULT NULL)"
 			};
 
 			for (String sql : sqlBlock) { db.execSQL(sql); }
@@ -181,7 +252,9 @@ public class DbHelper {
 					"DROP TABLE IF EXISTS config",
 					"DROP TABLE IF EXISTS rss",
 					"DROP TABLE IF EXISTS row",
-					"DROP TABLE IF EXISTS idea"
+					"DROP TABLE IF EXISTS comentaris",
+					"DROP TABLE IF EXISTS propostes",
+					"DROP TABLE IF EXISTS solucions"
 			};
 
 			for (String sql : sqlBlock) { db.execSQL(sql); }

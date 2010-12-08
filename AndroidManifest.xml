@@ -21,6 +21,13 @@
 		<activity android:name="cat.pirata.activities.IdeatorrentActivity" android:label="@string/app_name" android:screenOrientation="portrait" />
 		<activity android:name="cat.pirata.activities.CalendariActivity" android:label="@string/app_name" android:screenOrientation="portrait" />
 
+		<activity android:name="cat.pirata.activities.IdeaWaiting" android:label="@string/app_name" android:screenOrientation="portrait" />
+		<activity android:name="cat.pirata.activities.IdeaVoting" android:label="@string/app_name" android:screenOrientation="portrait" />
+		<activity android:name="cat.pirata.activities.IdeaDeveloping" android:label="@string/app_name" android:screenOrientation="portrait" />
+		<activity android:name="cat.pirata.activities.IdeaDone" android:label="@string/app_name" android:screenOrientation="portrait" />
+
+
+
     	<receiver android:name="cat.pirata.widget.WidgetProvider" >
     		<intent-filter>
     			<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

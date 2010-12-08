@@ -1,14 +1,20 @@
 
+WORKING IN:
+* IdeaTorrent:
+	- Authentication
+	- Comments & Suggestions
+
 WARNING:
-* Developed under android 2.2, but it should work in 2.1 and 1.x
+* Developed under android 2.2, but it should work in 2.3, 2.1 and 1.x
 * android:minSdkVersion="1"
 
 TODO:
 * Redesign images and refactor the names of the sources
-* IdeaTorrent
+* Re-Organize all the source code
+* Re-Make the widget
 
 PLEASE:
-* Report me errors,
+* Report me errors & spells,
 * give me feedback,
 * suggest me new features,
 * WHATEVER

@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.apache.http.util.ByteArrayBuffer;
+import org.json.JSONException;
 
 import android.database.Cursor;
 import android.text.Html;
@@ -56,6 +57,22 @@ public class RSS {
 		cal.roll(Calendar.MONTH, numMonthsOfOldNews);
 		db.clearOldNews( cal.getTimeInMillis() );
 	}
+	
+	public void ideaUpdate() throws JSONException {
+		int time = db.getIdeaLastUpdate();
+		Log.d("1TIME", String.valueOf(time));
+		
+		//time = 1291666826;
+		String str = downloadRSS("http://192.168.1.5/export.php?time=" + String.valueOf(time));
+		db.ideaUpdate(str);
+		time = Integer.valueOf(String.format("%s", System.currentTimeMillis()).substring(0,10));
+
+		Log.d("2TIME", String.valueOf(time));
+		db.setIdeaLastUpdate(time);
+	}
+	
+	
+
 
 
 	// -PRIVATE-
