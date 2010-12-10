@@ -75,8 +75,6 @@ public class IdeatorrentActivity extends TabActivity {
 		};
 	}
 	
-
-	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -99,7 +97,6 @@ public class IdeatorrentActivity extends TabActivity {
 		ProgressBar pb = (ProgressBar) getParent().findViewById(R.id.progressbar);
 		pb.setVisibility(View.VISIBLE);
 	}
-	
 	
 	@Override
 	protected void onDestroy() {

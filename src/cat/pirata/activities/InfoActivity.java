@@ -345,7 +345,7 @@ public class InfoActivity extends ListActivity {
 			cal.setTime(new Date( cr.getLong(cr.getColumnIndex("lastAccess")) ));
 
 			TextView tv1 = ((TextView)row.findViewById(R.id.date));
-			tv1.setText(String.format("%d %s", cal.get(Calendar.DATE), calMonth(cal.get(Calendar.MONTH))));
+			tv1.setText(String.format("%02d %s", cal.get(Calendar.DATE), calMonth(cal.get(Calendar.MONTH))));
 
 			TextView tv2 = ((TextView)row.findViewById(R.id.text));
 			tv2.setText(cr.getString(cr.getColumnIndex("body")));

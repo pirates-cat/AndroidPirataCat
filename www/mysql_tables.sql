@@ -57,6 +57,6 @@ CREATE TABLE IF NOT EXISTS `solucions` (
   `sid` int(10) unsigned NOT NULL,
   `title` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
   `description` text COLLATE utf8_spanish2_ci NOT NULL,
-  `votes` int(10) unsigned NOT NULL,
+  `votes` int(10) NOT NULL,
   PRIMARY KEY (`pid`,`sid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;

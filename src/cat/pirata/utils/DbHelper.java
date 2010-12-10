@@ -14,7 +14,7 @@ import cat.pirata.R;
 public class DbHelper {
 
 	private static final String DATABASE_NAME = "PIRATACAT";
-	private static final int DATABASE_VERSION = 21;
+	private static final int DATABASE_VERSION = 24;
 
 	private SQLiteDatabase db;
 
@@ -111,37 +111,63 @@ public class DbHelper {
 	
 	public void ideaUpdate(String str) throws JSONException {
 		JSONObject json = new JSONObject(str);
-		//Log.d("JSON", json.toString(4));
+		// Log.d("JSON", json.toString(4));
 		
-		if (json.has("solucions")) {
-			JSONArray solucions = new JSONArray(json.getString("solucions"));
-			for (int i = 0; i < solucions.length(); i++) {
-				String sql = "INSERT INTO solucions (pid, sid, title, description, votes) VALUES (" +
-				solucions.getJSONObject(i).getString("pid") + ", " +
-				solucions.getJSONObject(i).getString("sid") + ", '" +
-				solucions.getJSONObject(i).getString("title").replace("'", "`") + "', '" +
-				solucions.getJSONObject(i).getString("description").replace("'", "`") + "', " +
-				solucions.getJSONObject(i).getString("votes") + ")";
+		if (json.has("ideas")) {
+			JSONArray ideas = new JSONArray(json.getString("ideas"));
+			for (int i = 0; i < ideas.length(); i++) {
+				String sql = "INSERT INTO ideas (status, iid, pubDate, title, description) VALUES ('" +
+					ideas.getJSONObject(i).getString("status") + "', " +
+					ideas.getJSONObject(i).getString("iid") + ", " +
+					ideas.getJSONObject(i).getString("pubDate") + ", '" +
+					ideas.getJSONObject(i).getString("title").replace("'", "`") + "', '" +
+					ideas.getJSONObject(i).getString("description").replace("'", "`") + "')";
 
-				Log.d("sql", sql);
+				// Log.d("sql(i)", sql);
 				db.execSQL(sql);
 			}
 		}
 		
-		if (json.has("propostes")) {
-			JSONArray propostes = new JSONArray(json.getString("propostes"));
-			for (int i = 0; i < propostes.length(); i++) {
-				String sql = "INSERT INTO propostes (status, pid, pubDate, title, description) VALUES ('" +
-				propostes.getJSONObject(i).getString("status") + "', " +
-				propostes.getJSONObject(i).getString("pid") + ", " +
-				propostes.getJSONObject(i).getString("pubDate") + ", '" +
-				propostes.getJSONObject(i).getString("title").replace("'", "`") + "', '" +
-				propostes.getJSONObject(i).getString("description").replace("'", "`") + "')";
+		if (json.has("solutions")) {
+			JSONArray solutions = new JSONArray(json.getString("solutions"));
+			for (int i = 0; i < solutions.length(); i++) {
+				String sql = "INSERT INTO solutions (iid, sid, title, description, votes) VALUES (" +
+					solutions.getJSONObject(i).getString("iid") + ", " +
+					solutions.getJSONObject(i).getString("sid") + ", '" +
+					solutions.getJSONObject(i).getString("title").replace("'", "`") + "', '" +
+					solutions.getJSONObject(i).getString("description").replace("'", "`") + "', " +
+					solutions.getJSONObject(i).getString("votes") + ")";
 
-				Log.d("sql", sql);
+				// Log.d("sql(s)", sql);
 				db.execSQL(sql);
 			}
 		}
+		
+		if (json.has("votes")) {
+			JSONArray votes = new JSONArray(json.getString("votes"));
+			for (int i = 0; i < votes.length(); i++) {
+				String sql = "UPDATE solutions " +
+					"SET votes=" + votes.getJSONObject(i).getString("votes") +
+					" WHERE iid=" + votes.getJSONObject(i).getString("iid") +
+					" AND sid=" + votes.getJSONObject(i).getString("sid");
+
+				// Log.d("sql(v)", sql);
+				db.execSQL(sql);
+			}
+		}
+	}
+	
+	public int getVoted(int iid, int sid) {
+		String sql = "SELECT voted FROM solutions WHERE iid="+iid+" AND sid="+sid+" LIMIT 1";
+		Cursor cr = db.rawQuery(sql, null);
+		int value =  (cr.moveToFirst()) ? cr.getInt(cr.getColumnIndex("voted")) : -1;
+		cr.close();
+		return value;
+	}
+
+	public void setVoted(String iid, String sid, int i) {
+		String sql = "UPDATE solutions SET voted="+String.valueOf(i)+" WHERE iid="+iid+" AND sid="+sid;
+		db.execSQL(sql);
 	}
 	
 	public int getIdeaLastUpdate() {
@@ -159,14 +185,14 @@ public class DbHelper {
 	
 	
 	public Cursor getPropostes(String status) {
-		String sql = "SELECT * FROM propostes WHERE status='"+status+"' ORDER BY pubDate DESC LIMIT 100";
+		String sql = "SELECT * FROM ideas WHERE status='"+status+"' ORDER BY pubDate DESC LIMIT 100";
 		Cursor cr = db.rawQuery(sql, null);
 		cr.moveToFirst();
 		return cr;
 	}
 	
-	public Cursor getSolucions(Integer pid) {
-		String sql = "SELECT * FROM solucions WHERE pid='"+String.valueOf(pid)+"' ORDER BY sid DESC LIMIT 100";
+	public Cursor getSolucions(Integer iid) {
+		String sql = "SELECT * FROM solutions WHERE iid='" + String.valueOf(iid) + "' ORDER BY sid ASC LIMIT 100";
 		Cursor cr = db.rawQuery(sql, null);
 		cr.moveToFirst();
 		return cr;
@@ -237,9 +263,8 @@ public class DbHelper {
 					"INSERT INTO rss (id, name, lastAccess, url, icon, enabled) VALUES (3, 'PPInternational', 0, 'http://www.pp-international.net/rss.xml',"+ R.drawable.ic_info_ppinternational +", 1)",					
 					"CREATE TABLE row (id INT, lastAccess INTEGER, body TEXT, followUrl TEXT)",
 					
-					"CREATE TABLE comentaris (pid INT, cid INT, pubDate INT, author TEXT, description TEXT)",
-					"CREATE TABLE propostes (status TEXT, pid INT, pubDate INT, title TEXT, description TEXT)",
-					"CREATE TABLE solucions (pid INT, sid INT, title TEXT, description TEXT, votes INT, voted INT DEFAULT NULL)"
+					"CREATE TABLE ideas (status TEXT, iid INT, pubDate INT, title TEXT, description TEXT)",
+					"CREATE TABLE solutions (iid INT, sid INT, title TEXT, description TEXT, votes INT, voted INT DEFAULT 0)"
 			};
 
 			for (String sql : sqlBlock) { db.execSQL(sql); }
@@ -254,7 +279,10 @@ public class DbHelper {
 					"DROP TABLE IF EXISTS row",
 					"DROP TABLE IF EXISTS comentaris",
 					"DROP TABLE IF EXISTS propostes",
-					"DROP TABLE IF EXISTS solucions"
+					"DROP TABLE IF EXISTS solucions",
+					"DROP TABLE IF EXISTS comments",
+					"DROP TABLE IF EXISTS ideas",
+					"DROP TABLE IF EXISTS solutions"
 			};
 
 			for (String sql : sqlBlock) { db.execSQL(sql); }

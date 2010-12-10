@@ -60,14 +60,27 @@ public class RSS {
 	
 	public void ideaUpdate() throws JSONException {
 		int time = db.getIdeaLastUpdate();
-		Log.d("1TIME", String.valueOf(time));
+		Log.d("(1)TIME", String.valueOf(time));
 		
-		String str = downloadRSS("http://192.168.1.5/export.php?time=" + String.valueOf(time));
+		String str = downloadRSS("http://m.pirata.cat/request/ideatorrentControl.php?time=" + String.valueOf(time));
+		// Log.d("query", (new JSONObject(str)).toString(2));
 		db.ideaUpdate(str);
 		time = Integer.valueOf(String.format("%s", System.currentTimeMillis()).substring(0,10));
 
-		Log.d("2TIME", String.valueOf(time));
+		Log.d("(2)TIME", String.valueOf(time));
 		db.setIdeaLastUpdate(time);
+	}
+	
+
+	public String getOnlineComment(int iid) {
+		return downloadRSS("http://m.pirata.cat/request/ideatorrentControl.php?id=" + String.valueOf(iid));
+	}
+	
+	public void sendNewComment(String valueOf, Integer iid, String myToken) {
+		// TODO Auto-generated method stub
+		Log.d("valueOf", valueOf);
+		Log.d("iid", String.valueOf(iid));
+		Log.d("myToken", valueOf);
 	}
 	
 	

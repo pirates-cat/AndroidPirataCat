@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" >
+	<RelativeLayout 
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+	 
+		<LinearLayout
+			xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:orientation="vertical">
+			<LinearLayout
+				android:id="@+id/root"
+				android:layout_width="wrap_content"
+				android:layout_height="fill_parent"
+				android:orientation="vertical" />
+				
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="2sp"
+				android:background="#666" />
+				
+			<EditText
+				android:id="@+id/nouComentari"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" />
+				
+			<LinearLayout
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+			    <Button
+			    	android:id="@+id/send"
+			    	android:layout_width="fill_parent" 
+					android:layout_height="wrap_content"
+					android:gravity="center_horizontal"
+					android:layout_weight="1"
+					android:text="Enviar" />
+			    <Button
+			    	android:id="@+id/cancel"
+			    	android:layout_width="fill_parent" 
+					android:layout_height="wrap_content"
+					android:gravity="center_horizontal"
+					android:layout_weight="1"
+					android:text="Tornar" />
+			</LinearLayout>
+		</LinearLayout>
+		<ProgressBar android:id="@+id/progressbar"
+			style="?android:attr/progressBarStyleLarge"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:visibility="invisible" />
+	</RelativeLayout>
+</ScrollView>
