@@ -4,6 +4,5 @@ import android.view.View;
 
 public class AuxTag {
 	public View view;
-	public String iid;
-	public String sid;
+	public int rsid;
 }

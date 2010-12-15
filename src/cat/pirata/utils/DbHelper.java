@@ -9,12 +9,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import cat.pirata.R;
+import cat.pirata.activities.R;
 
 public class DbHelper {
 
 	private static final String DATABASE_NAME = "PIRATACAT";
-	private static final int DATABASE_VERSION = 24;
+	private static final int DATABASE_VERSION = 32;
 
 	private SQLiteDatabase db;
 
@@ -131,9 +131,10 @@ public class DbHelper {
 		if (json.has("solutions")) {
 			JSONArray solutions = new JSONArray(json.getString("solutions"));
 			for (int i = 0; i < solutions.length(); i++) {
-				String sql = "INSERT INTO solutions (iid, sid, title, description, votes) VALUES (" +
+				String sql = "INSERT INTO solutions (iid, sid, rsid, title, description, votes) VALUES (" +
 					solutions.getJSONObject(i).getString("iid") + ", " +
-					solutions.getJSONObject(i).getString("sid") + ", '" +
+					solutions.getJSONObject(i).getString("sid") + ", " +
+					solutions.getJSONObject(i).getString("rsid") + ", '" +
 					solutions.getJSONObject(i).getString("title").replace("'", "`") + "', '" +
 					solutions.getJSONObject(i).getString("description").replace("'", "`") + "', " +
 					solutions.getJSONObject(i).getString("votes") + ")";
@@ -148,8 +149,7 @@ public class DbHelper {
 			for (int i = 0; i < votes.length(); i++) {
 				String sql = "UPDATE solutions " +
 					"SET votes=" + votes.getJSONObject(i).getString("votes") +
-					" WHERE iid=" + votes.getJSONObject(i).getString("iid") +
-					" AND sid=" + votes.getJSONObject(i).getString("sid");
+					" WHERE rsid=" + votes.getJSONObject(i).getString("rsid");
 
 				// Log.d("sql(v)", sql);
 				db.execSQL(sql);
@@ -157,16 +157,16 @@ public class DbHelper {
 		}
 	}
 	
-	public int getVoted(int iid, int sid) {
-		String sql = "SELECT voted FROM solutions WHERE iid="+iid+" AND sid="+sid+" LIMIT 1";
+	public int getVoted(int rsid) {
+		String sql = "SELECT voted FROM solutions WHERE rsid="+rsid+" LIMIT 1";
 		Cursor cr = db.rawQuery(sql, null);
 		int value =  (cr.moveToFirst()) ? cr.getInt(cr.getColumnIndex("voted")) : -1;
 		cr.close();
 		return value;
 	}
 
-	public void setVoted(String iid, String sid, int i) {
-		String sql = "UPDATE solutions SET voted="+String.valueOf(i)+" WHERE iid="+iid+" AND sid="+sid;
+	public void setVoted(int rsid, int vote) {
+		String sql = "UPDATE solutions SET voted='"+vote+"' WHERE rsid="+rsid;
 		db.execSQL(sql);
 	}
 	
@@ -198,8 +198,8 @@ public class DbHelper {
 		return cr;
 	}
 
+	
 	// -MENUS-
-
 
 	public void deleteRSS(int id) {
 		// we will have at least the bloc pirata :)
@@ -231,6 +231,50 @@ public class DbHelper {
 		db.execSQL(sql, new String[]{ nom, url });
 	}
 	
+	public void setUserPass(String user, String pass) {
+		// It SHOULD work with the AccountManager, not with BD!
+		String[] sqlBlock = new String[] {
+				"UPDATE config SET value='"+user+"' WHERE key='Username'",
+				"UPDATE config SET value='"+pass+"' WHERE key='Password'"
+		};
+		for (String sql : sqlBlock) { db.execSQL(sql); }
+	}
+	
+	public String getUser() {
+		String sql = "SELECT value FROM config WHERE key='Username'";
+		Cursor cr = db.rawQuery(sql, null);
+		String value =  (cr.moveToFirst()) ? cr.getString(cr.getColumnIndex("value")) : null;
+		cr.close();
+		return value;
+	}
+	
+	public String getPass() {
+		String sql = "SELECT value FROM config WHERE key='Password'";
+		Cursor cr = db.rawQuery(sql, null);
+		String value =  (cr.moveToFirst()) ? cr.getString(cr.getColumnIndex("value")) : null;
+		cr.close();
+		return value;
+	}
+	
+	public void setToken(String token) {
+		String sql = "UPDATE config SET value='"+token+"' WHERE key='MyToken'";
+		db.execSQL(sql);
+	}
+
+	public String getToken() {
+		String sql = "SELECT value FROM config WHERE key='MyToken'";
+		Cursor cr = db.rawQuery(sql, null);
+		String value = (cr.moveToFirst()) ? cr.getString(cr.getColumnIndex("value")).trim() : null;
+		cr.close();
+		return value;
+	}
+	
+	
+	
+	
+	
+	
+	
 	// -WIDGET-
 	
 	public Cursor getLastRow() {
@@ -252,10 +296,13 @@ public class DbHelper {
 		public void onCreate(SQLiteDatabase db) {
 			Log.d("DB", "onCreate");
 			String[] sqlBlock = new String[] {
-					"CREATE TABLE config (key TEXT, value INT)",
-					"INSERT INTO config (key, value) VALUES ('FirstTime', 1)",
-					"INSERT INTO config (key, value) VALUES ('LastUpdateIdea', 1)",
-					"INSERT INTO config (key, value) VALUES ('ID', 4)",
+					"CREATE TABLE config (key TEXT, value TEXT)",
+					"INSERT INTO config (key, value) VALUES ('FirstTime', '1')",
+					"INSERT INTO config (key, value) VALUES ('LastUpdateIdea', '1')",
+					"INSERT INTO config (key, value) VALUES ('ID', '4')",
+					"INSERT INTO config (key, value) VALUES ('MyToken', '')",
+					"INSERT INTO config (key, value) VALUES ('Username', '')",
+					"INSERT INTO config (key, value) VALUES ('Password', '')",
 					"CREATE TABLE rss (id INT, name TEXT, lastAccess INTEGER, url TEXT, icon INT, enabled INT)",
 					"INSERT INTO rss (id, name, lastAccess, url, icon, enabled) VALUES (0, 'Bloc Pirata', 0, 'http://pirata.cat/bloc/?feed=rss2',"+ R.drawable.ic_info_bloc +", 1)",
 					"INSERT INTO rss (id, name, lastAccess, url, icon, enabled) VALUES (1, 'YouTube', 0, 'http://gdata.youtube.com/feeds/base/users/PiratesdeCatalunyaTV/uploads?alt=rss&v=2&orderby=published',"+ R.drawable.ic_info_youtube +", 1)",
@@ -264,7 +311,7 @@ public class DbHelper {
 					"CREATE TABLE row (id INT, lastAccess INTEGER, body TEXT, followUrl TEXT)",
 					
 					"CREATE TABLE ideas (status TEXT, iid INT, pubDate INT, title TEXT, description TEXT)",
-					"CREATE TABLE solutions (iid INT, sid INT, title TEXT, description TEXT, votes INT, voted INT DEFAULT 0)"
+					"CREATE TABLE solutions (iid INT, sid INT, rsid INT, title TEXT, description TEXT, votes INT, voted INT DEFAULT 15)"
 			};
 
 			for (String sql : sqlBlock) { db.execSQL(sql); }
@@ -290,3 +337,4 @@ public class DbHelper {
 		}
 	}
 }
+

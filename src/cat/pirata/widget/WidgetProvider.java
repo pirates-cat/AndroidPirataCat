@@ -11,8 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.widget.RemoteViews;
-import cat.pirata.PartitPirata;
-import cat.pirata.R;
+import cat.pirata.activities.PartitPirata;
+import cat.pirata.activities.R;
 import cat.pirata.utils.DbHelper;
 
 

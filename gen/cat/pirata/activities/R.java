@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package cat.pirata;
+package cat.pirata.activities;
 
 public final class R {
     public static final class array {
@@ -41,42 +41,48 @@ public final class R {
         public static final int widget_background=0x7f020018;
     }
     public static final class id {
-        public static final int TextView01=0x7f08001a;
-        public static final int afegir=0x7f080012;
+        public static final int TextView01=0x7f08001d;
+        public static final int afegir=0x7f080015;
         public static final int author=0x7f080001;
-        public static final int baseDesc=0x7f08000a;
+        public static final int baseDesc=0x7f08000d;
         public static final int cancel=0x7f080007;
-        public static final int cancelar=0x7f080013;
-        public static final int config=0x7f080022;
-        public static final int date=0x7f080018;
+        public static final int cancelar=0x7f080016;
+        public static final int config=0x7f080028;
+        public static final int date=0x7f08001b;
         public static final int description=0x7f080003;
-        public static final int direccio=0x7f080010;
-        public static final int entrar=0x7f080016;
-        public static final int esborrar=0x7f080021;
-        public static final int icon=0x7f080017;
-        public static final int icon_down=0x7f08000d;
-        public static final int icon_eq=0x7f08000c;
-        public static final int icon_up=0x7f08000b;
+        public static final int desloguejar=0x7f080026;
+        public static final int direccio=0x7f080013;
+        public static final int entrar=0x7f080019;
+        public static final int esborrar=0x7f080027;
+        public static final int icon=0x7f08001a;
+        public static final int icon_down=0x7f080010;
+        public static final int icon_eq=0x7f08000f;
+        public static final int icon_up=0x7f08000e;
         public static final int ll=0x7f080000;
-        public static final int load=0x7f080015;
-        public static final int nomrss=0x7f08000f;
+        public static final int load=0x7f080018;
+        public static final int loguejar=0x7f080025;
+        public static final int nomrss=0x7f080012;
         public static final int nouComentari=0x7f080005;
+        public static final int ok=0x7f08000b;
+        public static final int pass=0x7f08000a;
         public static final int progressbar=0x7f080008;
         public static final int pubDate=0x7f080002;
-        public static final int quit=0x7f080023;
-        public static final int radio=0x7f080014;
+        public static final int quit=0x7f080029;
+        public static final int radio=0x7f080017;
+        public static final int refrescar=0x7f080024;
         public static final int root=0x7f080004;
         public static final int send=0x7f080006;
-        public static final int spinner=0x7f080011;
-        public static final int text=0x7f080019;
-        public static final int title=0x7f080009;
-        public static final int votes=0x7f08000e;
-        public static final int widget_button=0x7f080020;
-        public static final int widget_icon=0x7f08001c;
-        public static final int widget_llayout=0x7f08001b;
-        public static final int widget_text1=0x7f08001d;
-        public static final int widget_text2=0x7f08001e;
-        public static final int widget_text3=0x7f08001f;
+        public static final int spinner=0x7f080014;
+        public static final int text=0x7f08001c;
+        public static final int title=0x7f08000c;
+        public static final int user=0x7f080009;
+        public static final int votes=0x7f080011;
+        public static final int widget_button=0x7f080023;
+        public static final int widget_icon=0x7f08001f;
+        public static final int widget_llayout=0x7f08001e;
+        public static final int widget_text1=0x7f080020;
+        public static final int widget_text2=0x7f080021;
+        public static final int widget_text3=0x7f080022;
     }
     public static final class layout {
         public static final int ic_tab_calendari=0x7f030000;
@@ -85,21 +91,23 @@ public final class R {
         public static final int idea=0x7f030003;
         public static final int idea_dialog_comment=0x7f030004;
         public static final int idea_dialog_comments=0x7f030005;
-        public static final int idea_row_proposta=0x7f030006;
-        public static final int idea_row_solucio=0x7f030007;
-        public static final int idea_row_solucio_novote=0x7f030008;
-        public static final int info_dialog_afegir=0x7f030009;
-        public static final int info_dialog_config=0x7f03000a;
-        public static final int info_dialog_firsttime=0x7f03000b;
-        public static final int info_row=0x7f03000c;
-        public static final int main=0x7f03000d;
-        public static final int tab_idea=0x7f03000e;
-        public static final int test=0x7f03000f;
-        public static final int tv_description=0x7f030010;
-        public static final int widget=0x7f030011;
+        public static final int idea_dialog_loguejar=0x7f030006;
+        public static final int idea_row_proposta=0x7f030007;
+        public static final int idea_row_solucio=0x7f030008;
+        public static final int idea_row_solucio_novote=0x7f030009;
+        public static final int info_dialog_afegir=0x7f03000a;
+        public static final int info_dialog_config=0x7f03000b;
+        public static final int info_dialog_firsttime=0x7f03000c;
+        public static final int info_row=0x7f03000d;
+        public static final int main=0x7f03000e;
+        public static final int tab_idea=0x7f03000f;
+        public static final int test=0x7f030010;
+        public static final int tv_description=0x7f030011;
+        public static final int widget=0x7f030012;
     }
     public static final class menu {
-        public static final int informacio=0x7f070000;
+        public static final int ideatorrent=0x7f070000;
+        public static final int informacio=0x7f070001;
     }
     public static final class string {
         public static final int afegir=0x7f050013;

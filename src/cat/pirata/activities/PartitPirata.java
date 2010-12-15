@@ -1,13 +1,10 @@
-package cat.pirata;
+package cat.pirata.activities;
 
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.TabHost;
-import cat.pirata.activities.CalendariActivity;
-import cat.pirata.activities.IdeatorrentActivity;
-import cat.pirata.activities.InfoActivity;
 
 public class PartitPirata extends TabActivity {
 

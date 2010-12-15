@@ -20,23 +20,19 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import cat.pirata.R;
 import cat.pirata.utils.AuxTag;
 import cat.pirata.utils.DbHelper;
-import cat.pirata.utils.RSS;
+import cat.pirata.utils.Net;
 
 public class IdeaDone extends Activity {
 	
 	private static String NAME = "done";
 	private static int LAYOUTSOLUTION = R.layout.idea_row_solucio_novote;
-	
+
 	private DbHelper db;
-	private RSS rss;
+	private Net net;
 	private LinearLayout ll;
 	private Dialog dialog;
-	
-	private boolean isAuth = true;
-	private String myToken = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +42,7 @@ public class IdeaDone extends Activity {
 		ll = (LinearLayout) findViewById(R.id.ll);
 		
 		db = new DbHelper(getBaseContext());
-		rss = new RSS(db);
+		net = new Net(db);
 	}
 
 	@Override
@@ -63,7 +59,7 @@ public class IdeaDone extends Activity {
 	
 	// VOTING
 	public void voteUp (View v) {
-		if (!isAuth) {
+		if (!net.isAuth()) {
 			Toast.makeText(getBaseContext(), "Autentifica't al menu de sota!", Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -75,11 +71,12 @@ public class IdeaDone extends Activity {
 		ib.setImageResource(R.drawable.idea_equal_grey);
 		ib = (ImageButton) aux.view.findViewById(R.id.icon_down);
 		ib.setImageResource(R.drawable.idea_down_grey);
-		db.setVoted(aux.iid, aux.sid, 1);
+		net.vote(aux.rsid, 1);
+		db.setVoted(aux.rsid, 1);
 	}
 	
 	public void voteEqual (View v) {
-		if (!isAuth) {
+		if (!net.isAuth()) {
 			Toast.makeText(getBaseContext(), "Autentifica't al menu de sota!", Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -91,11 +88,12 @@ public class IdeaDone extends Activity {
 		ib.setImageResource(R.drawable.idea_equal_color);
 		ib = (ImageButton) aux.view.findViewById(R.id.icon_down);
 		ib.setImageResource(R.drawable.idea_down_grey);
-		db.setVoted(aux.iid, aux.sid, 2);
+		net.vote(aux.rsid, 0);
+		db.setVoted(aux.rsid, 0);
 	}
 	
 	public void voteDown (View v) {
-		if (!isAuth) {
+		if (!net.isAuth()) {
 			Toast.makeText(getBaseContext(), "Autentifica't al menu de sota!", Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -107,7 +105,8 @@ public class IdeaDone extends Activity {
 		ib.setImageResource(R.drawable.idea_equal_grey);
 		ib = (ImageButton) aux.view.findViewById(R.id.icon_down);
 		ib.setImageResource(R.drawable.idea_down_color);
-		db.setVoted(aux.iid, aux.sid, 3);
+		net.vote(aux.rsid, -1);
+		db.setVoted(aux.rsid, -1);
 	}
 	//
 	
@@ -132,6 +131,7 @@ public class IdeaDone extends Activity {
 				do {
 					addViewSolution(crSol.getInt(crSol.getColumnIndex("iid")),
 							crSol.getInt(crSol.getColumnIndex("sid")),
+							crSol.getInt(crSol.getColumnIndex("rsid")),
 							crSol.getInt(crSol.getColumnIndex("votes")),
 							crSol.getString(crSol.getColumnIndex("title")),
 							crSol.getString(crSol.getColumnIndex("description")));
@@ -144,8 +144,7 @@ public class IdeaDone extends Activity {
 	}
 
 	
-	private void addViewSolution(int iid, int sid, int votes, String title, String description) {
-		
+	private void addViewSolution(int iid, int sid, int rsid, int votes, String title, String description) {
 		OnClickListener openClose = new OnClickListener() {
 		    public void onClick(View v) {
 		    	TextView tv = (TextView) v.findViewById(R.id.description);
@@ -162,17 +161,18 @@ public class IdeaDone extends Activity {
 		};
 		
 		View child = getLayoutInflater().inflate(LAYOUTSOLUTION, null);
+
 		child.setClickable(true);
 		child.setOnClickListener(openClose);
 		
 		TextView tv;
 		ImageButton ib;
 		AuxTag aux = new AuxTag();
-		aux.view = child; aux.iid = String.valueOf(iid); aux.sid = String.valueOf(sid);
+		aux.view = child;
+		aux.rsid = rsid;
 		
-		if (LAYOUTSOLUTION == R.layout.idea_row_solucio)
-		{
-			int opt = db.getVoted(iid, sid);
+		if (LAYOUTSOLUTION == R.layout.idea_row_solucio) {
+			int opt = db.getVoted(rsid);
 			
 			ib = (ImageButton) child.findViewById(R.id.icon_up);
 			ib.setTag(aux);
@@ -180,11 +180,11 @@ public class IdeaDone extends Activity {
 			
 			ib = (ImageButton) child.findViewById(R.id.icon_eq);
 			ib.setTag(aux);
-			if (opt==2) { ib.setImageResource(R.drawable.idea_equal_color); }
+			if (opt==0) { ib.setImageResource(R.drawable.idea_equal_color); }
 			
 			ib = (ImageButton) child.findViewById(R.id.icon_down);
 			ib.setTag(aux);
-			if (opt==3) { ib.setImageResource(R.drawable.idea_down_color); }
+			if (opt==-1) { ib.setImageResource(R.drawable.idea_down_color); }
 		}
 		
 		tv = (TextView) child.findViewById(R.id.votes);
@@ -225,7 +225,7 @@ public class IdeaDone extends Activity {
 				dialog.setTitle("Comentaris");
 				dialog.setContentView(R.layout.idea_dialog_comments);
 				
-				String strJson = rss.getOnlineComment( (Integer)v.getTag() );
+				String strJson = net.getOnlineComment( (Integer)v.getTag() );
 				Log.d("json", strJson );
 				try {
 					JSONObject json = new JSONObject(strJson);
@@ -265,12 +265,12 @@ public class IdeaDone extends Activity {
 				button = (Button) dialog.findViewById(R.id.send);
 				button.setOnClickListener(new OnClickListener() {
 					public void onClick(View v) {
-						if (!isAuth) {
+						if (!net.isAuth()) {
 							Toast.makeText(getBaseContext(), "Autentifica't al menu de sota!", Toast.LENGTH_SHORT).show();
 							dialog.cancel();
 						}
 						TextView tv = (TextView) dialog.findViewById(R.id.nouComentari);
-						rss.sendNewComment(String.valueOf(tv.getText()), (Integer)v.getTag(), myToken);
+						net.sendNewComment(String.valueOf(tv.getText()), (Integer)v.getTag());
 						dialog.cancel();
 					}
 				});

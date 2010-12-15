@@ -31,16 +31,15 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
-import cat.pirata.R;
 import cat.pirata.utils.DbHelper;
-import cat.pirata.utils.RSS;
+import cat.pirata.utils.Net;
 
 
 public class InfoActivity extends ListActivity {
 
 	public static final int numLastNews = 100;
 
-	private RSS rss;
+	private Net net;
 	private Handler hr;
 	private DbHelper db;
 	private Cursor cr;
@@ -55,8 +54,8 @@ public class InfoActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		Log.d("", "onCreate");
 		db = new DbHelper(getBaseContext());
-		rss = new RSS(db);
-		cr = rss.getLastNews(numLastNews);
+		net = new Net(db);
+		cr = net.getLastNews(numLastNews);
 		hr = new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
@@ -91,9 +90,9 @@ public class InfoActivity extends ListActivity {
 		Thread background = new Thread(new Runnable() {
 			public void run() {
 				try {
-					rss.refreshLastNews();
+					net.refreshLastNews();
 					cr.requery();
-					rss.clearOldNews();
+					net.clearOldNews();
 					hr.sendMessage(hr.obtainMessage());
 				} catch (IllegalStateException e) {
 					// race condition !!
@@ -191,7 +190,7 @@ public class InfoActivity extends ListActivity {
 				
 				db.insertRSS(nomrss.getText().toString(), urlrss.getText().toString(), spinner.getSelectedItemPosition());
 				
-				rss.refreshLastNews();
+				net.refreshLastNews();
 				cr.requery();
 				getListView().invalidateViews();
 			}
