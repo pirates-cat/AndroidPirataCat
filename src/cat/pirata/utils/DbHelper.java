@@ -14,7 +14,7 @@ import cat.pirata.activities.R;
 public class DbHelper {
 
 	private static final String DATABASE_NAME = "PIRATACAT";
-	private static final int DATABASE_VERSION = 32;
+	private static final int DATABASE_VERSION = 33;
 
 	private SQLiteDatabase db;
 
@@ -116,13 +116,21 @@ public class DbHelper {
 		if (json.has("ideas")) {
 			JSONArray ideas = new JSONArray(json.getString("ideas"));
 			for (int i = 0; i < ideas.length(); i++) {
-				String sql = "INSERT INTO ideas (status, iid, pubDate, title, description) VALUES ('" +
-					ideas.getJSONObject(i).getString("status") + "', " +
-					ideas.getJSONObject(i).getString("iid") + ", " +
-					ideas.getJSONObject(i).getString("pubDate") + ", '" +
-					ideas.getJSONObject(i).getString("title").replace("'", "`") + "', '" +
-					ideas.getJSONObject(i).getString("description").replace("'", "`") + "')";
-
+				String sql;
+				if (!existsIdea(ideas.getJSONObject(i).getString("iid"))) {
+					sql = "INSERT INTO ideas (status, iid, pubDate, title, description) VALUES ('" +
+						ideas.getJSONObject(i).getString("status") + "', " +
+						ideas.getJSONObject(i).getString("iid") + ", " +
+						ideas.getJSONObject(i).getString("pubDate") + ", '" +
+						ideas.getJSONObject(i).getString("title").replace("'", "`") + "', '" +
+						ideas.getJSONObject(i).getString("description").replace("'", "`") + "')";
+				} else {
+					sql = "UPDATE ideas SET status='" + ideas.getJSONObject(i).getString("status") +
+							"', pubDate=" + ideas.getJSONObject(i).getString("pubDate") +
+							", title='" + ideas.getJSONObject(i).getString("title").replace("'", "`") + 
+							"', description='" + ideas.getJSONObject(i).getString("description").replace("'", "`") + 
+							"' WHERE iid=" + ideas.getJSONObject(i).getString("iid");
+				}
 				// Log.d("sql(i)", sql);
 				db.execSQL(sql);
 			}
@@ -131,16 +139,17 @@ public class DbHelper {
 		if (json.has("solutions")) {
 			JSONArray solutions = new JSONArray(json.getString("solutions"));
 			for (int i = 0; i < solutions.length(); i++) {
-				String sql = "INSERT INTO solutions (iid, sid, rsid, title, description, votes) VALUES (" +
-					solutions.getJSONObject(i).getString("iid") + ", " +
-					solutions.getJSONObject(i).getString("sid") + ", " +
-					solutions.getJSONObject(i).getString("rsid") + ", '" +
-					solutions.getJSONObject(i).getString("title").replace("'", "`") + "', '" +
-					solutions.getJSONObject(i).getString("description").replace("'", "`") + "', " +
-					solutions.getJSONObject(i).getString("votes") + ")";
-
-				// Log.d("sql(s)", sql);
-				db.execSQL(sql);
+				if (!existsSolution(solutions.getJSONObject(i).getString("rsid"))) {
+					String sql = "INSERT INTO solutions (iid, sid, rsid, title, description, votes) VALUES (" +
+						solutions.getJSONObject(i).getString("iid") + ", " +
+						solutions.getJSONObject(i).getString("sid") + ", " +
+						solutions.getJSONObject(i).getString("rsid") + ", '" +
+						solutions.getJSONObject(i).getString("title").replace("'", "`") + "', '" +
+						solutions.getJSONObject(i).getString("description").replace("'", "`") + "', " +
+						solutions.getJSONObject(i).getString("votes") + ")";
+					// Log.d("sql(s)", sql);
+					db.execSQL(sql);
+				}
 			}
 		}
 		
@@ -157,6 +166,22 @@ public class DbHelper {
 		}
 	}
 	
+	private boolean existsSolution(String rsid) {
+		String sql = "SELECT rsid FROM solutions WHERE rsid=" + rsid + " LIMIT 1";
+		Cursor cr = db.rawQuery(sql, null);
+		boolean value =  (cr.moveToFirst()) ? true : false;
+		cr.close();
+		return value;
+	}
+
+	private boolean existsIdea(String iid) {
+		String sql = "SELECT iid FROM ideas WHERE iid=" + iid + " LIMIT 1";
+		Cursor cr = db.rawQuery(sql, null);
+		boolean value =  (cr.moveToFirst()) ? true : false;
+		cr.close();
+		return value;
+	}
+
 	public int getVoted(int rsid) {
 		String sql = "SELECT voted FROM solutions WHERE rsid="+rsid+" LIMIT 1";
 		Cursor cr = db.rawQuery(sql, null);

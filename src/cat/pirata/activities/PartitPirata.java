@@ -27,7 +27,7 @@ public class PartitPirata extends TabActivity {
 		tabHost.addTab(spec);
 
 		i = new Intent().setClass(this, IdeatorrentActivity.class);
-		spec = tabHost.newTabSpec("ideatorrent").setIndicator("IdeaTorrent", res.getDrawable(R.layout.ic_tab_ideatorrent)).setContent(i);
+		spec = tabHost.newTabSpec("ideatorrent").setIndicator("Participació", res.getDrawable(R.layout.ic_tab_ideatorrent)).setContent(i);
 		tabHost.addTab(spec);
 
 		tabHost.setCurrentTab(2);
