@@ -1,16 +1,18 @@
 
 WORKING IN:
 * Waiting suggestions!!
-* Calendar?
 
 WARNING:
-* Developed under android 2.2, but it should work in 2.3, 2.1 and 1.x
+* Developed under android 2.2
 * android:minSdkVersion="1"
 
 TODO:
 * Redesign images and refactor the names of the sources
 * Re-Organize all the source code
 * Re-Make the widget
+* Re-Make the calendar
+* Add an idea
+* Add a solution
 
 PLEASE:
 * Report me errors & spells,

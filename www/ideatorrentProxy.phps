@@ -9,6 +9,7 @@
  */
 
 error_reporting(E_ALL);
+set_time_limit(20);
 
 
 ///	RSS_PHP - the PHP DOM based RSS Parser
@@ -38,12 +39,20 @@ $idea->setWebPath($webPath);
 
 // WHAT DO YOU WANNA DO?
 
-if (isset($_GET['update']))
-{
-	$minTime = time() - (2*30*24*60*60); // 2 month
-	$idea->update($minTime);
+// auto-update each 10minutes
+$R = mysql_query("SELECT value FROM config c WHERE c.key='lastUpdate' LIMIT 1", $db);
+
+if (mysql_num_rows($R) > 0) {
+	$minTime = time() - (10*60); // 10 minutes
+	$row = mysql_fetch_array($R, MYSQL_ASSOC);
+	if ($row['value'] < $minTime) {
+		$idea->update($minTime);
+		mysql_query("UPDATE config c SET value=".time()." WHERE c.key='lastUpdate'", $db);
+	}
 }
-else if (!empty($_GET['time']) && is_numeric($_GET['time']) && $_GET['time']>0)
+
+// menu
+if (!empty($_GET['time']) && is_numeric($_GET['time']) && $_GET['time']>0)
 {
 	$minTime = time() - (2*30*24*60*60); // 2 month
 	$idea->getIdeasAndSolutions($_GET['time'], $minTime);
@@ -57,6 +66,5 @@ else
 {
 	echo time();
 }
-
 
 ?>

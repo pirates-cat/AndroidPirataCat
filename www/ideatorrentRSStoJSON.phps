@@ -18,6 +18,8 @@ class ideatorrentRSStoJSON {
 			'developing'	=> 'ideas_in_development/rss2',
 			'done'			=> 'implemented_ideas/rss2'
 		);
+		
+	private $webXml = 'xml';
 			
 	private $rss;
 	private $db;
@@ -64,8 +66,8 @@ class ideatorrentRSStoJSON {
 				$V['pubDate'] = strtotime($rssItem['pubDate']);
 				$V['description'] = trim($t[0]);
 				
-				if ($V['pubDate'] > $minTime) {
-					echo $V['id'].": ";
+				if ($V['pubDate'] < $minTime) {
+					// echo $V['id'].": ";
 					$this->insertIdea($category, $V['id'], $V['pubDate'], $V['title'], $V['description']);
 				
 					for ($i=1; $i<count($t); $i++) {
@@ -75,11 +77,34 @@ class ideatorrentRSStoJSON {
 						$V[$i]['title'] = trim(end($aux[0]));
 						$V[$i]['description'] = trim($aux[1]);
 						
-						echo $i.", ";
+						// echo $i.", ";
 						$this->insertSolution($V['id'], $i, $V[$i]['title'], $V[$i]['description'], $V[$i]['votes']);
 					}
-					echo "<br />\n";
+					// echo "<br />\n";
 				}
+			}
+		}
+		
+		// echo "<br /><br />\n";
+		
+		
+		// rsid special case (I hate you, IdeaCoders)
+		// Version 2 => get all the params with this undocumented "/ideatorrent/xml"
+		$xmlStr = $this->get_https_rss($this->webPath.$this->webXml);
+		$parser = xml_parser_create();
+		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+		xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+		xml_parse_into_struct($parser, $xmlStr, $vals, $index);
+		xml_parser_free($parser);
+		
+		for ($i=0; isset($index['idea'][$i]); $i+=2) {
+			// echo "INDEX: $i<br />\n";
+			$iid = $vals[$index['idea'][$i]]['attributes']['id'];
+			for ($j=$index['idea'][$i]+15; isset($vals[$j]['attributes']['idea-solution-id']); $j+=10) {
+				$sid = $vals[$j]['attributes']['idea-solution-id'];
+				$rsid = $vals[$j]['attributes']['id'];
+				$this->updateSolution($iid, $sid, $rsid) ;
+				// echo " - $iid $sid $rsid <br />\n";
 			}
 		}
 	}
@@ -105,7 +130,7 @@ class ideatorrentRSStoJSON {
 		
 		// solutions
 		$R = $this->query("
-			SELECT iid, sid, title, description, votes
+			SELECT iid, sid, rsid, title, description, votes
 			FROM solutions
 			WHERE iid IN (".implode(',', $iid).") OR (pubDate>$from AND pubDate>$minTime)
 			ORDER BY iid, sid ASC");
@@ -118,7 +143,7 @@ class ideatorrentRSStoJSON {
 		
 		// votes
 		$R = $this->query("
-			SELECT s.iid, s.sid, s.votes
+			SELECT s.rsid, s.votes
 			FROM solutions s, ideas i
 			WHERE i.pubDate>$minTime AND i.iid = s.iid
 			ORDER BY i.pubDate DESC");
@@ -214,10 +239,17 @@ class ideatorrentRSStoJSON {
 		$title = addslashes($title);
 		$description = addslashes($description);
 		
+		// OJO: parche en pubDate muy guarrote!!
+		$xpubDate = $pubDate;
+		$R = $this->query("SELECT iid FROM ideas WHERE status='$status' AND iid='$iid' LIMIT 1");
+		if (mysql_num_rows($R) != 1) {
+			$xpubDate = time();
+		}
+		
 		$this->query("
 			INSERT INTO ideas (status, iid, pubDate, title, description)
 			VALUES ('$status', $iid, $pubDate, '$title', '$description')
-			ON DUPLICATE KEY UPDATE status='$status', pubDate=$pubDate, title='$title', description='$description'");
+			ON DUPLICATE KEY UPDATE status='$status', pubDate=$xpubDate, title='$title', description='$description'");
 	}
 
 
@@ -229,6 +261,11 @@ class ideatorrentRSStoJSON {
 			INSERT INTO solutions (iid, sid, pubDate, title, description, votes)
 			VALUES ($iid, $sid, ".time().", '$title', '$description', $votes)
 			ON DUPLICATE KEY UPDATE title='$title', description='$description', votes='$votes'");
+	}
+	
+	private function updateSolution($iid, $sid, $rsid) {
+		$this->query("
+			UPDATE solutions SET rsid='$rsid' WHERE iid=$iid AND sid=$sid LIMIT 1");
 	}
 
 
@@ -258,6 +295,7 @@ class ideatorrentRSStoJSON {
 	private function get_https_rss($url) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_HEADER, false);
 		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
