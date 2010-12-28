@@ -3,11 +3,11 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	package="cat.pirata.activities"
 	android:versionCode="3"
-	android:versionName="1.0.2">
+	android:versionName="2.0">
 	<application
 		android:icon="@drawable/icon48"
 		android:label="@string/app_name"
-		android:debuggable="false"
+		android:debuggable="true"
 		android:theme="@android:style/Theme.NoTitleBar" >
 		
 		<activity android:name=".PartitPirata" android:label="@string/app_name" android:screenOrientation="portrait">
@@ -17,22 +17,14 @@
 			</intent-filter>
 		</activity>
 		
-		<activity android:name=".InfoActivity" android:label="@string/app_name" />
-		<activity android:name=".IdeatorrentActivity" android:label="@string/app_name" android:screenOrientation="portrait" />
-		<activity android:name=".CalendariActivity" android:label="@string/app_name" android:screenOrientation="portrait" />
-
-		<activity android:name=".IdeaWaiting" android:label="@string/app_name" android:screenOrientation="portrait" />
-		<activity android:name=".IdeaVoting" android:label="@string/app_name" android:screenOrientation="portrait" />
-		<activity android:name=".IdeaDeveloping" android:label="@string/app_name" android:screenOrientation="portrait" />
-		<activity android:name=".IdeaDone" android:label="@string/app_name" android:screenOrientation="portrait" />
-
-
-    	<receiver android:name="cat.pirata.widget.WidgetProvider" >
-    		<intent-filter>
-    			<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-    		</intent-filter>
-    		<meta-data android:name="android.appwidget.provider" android:resource="@xml/widgetproviderinfo" />
-    	</receiver>
+		<activity android:name=".Participacio" />
+		<activity android:name=".Informacio" />
+		<activity android:name=".Calendari" />
+		
+		<activity android:name="cat.pirata.ideatorrent.IdeaWaiting" />
+		<activity android:name="cat.pirata.ideatorrent.IdeaVoting" />
+		<activity android:name="cat.pirata.ideatorrent.IdeaDeveloping" />
+		<activity android:name="cat.pirata.ideatorrent.IdeaDone" />
 	</application>
 	
 	<uses-sdk android:minSdkVersion="1" />

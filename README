@@ -1,4 +1,8 @@
 
+New Version 2.0 (revision 3)
+
+It's in the market (search: cat.pirata.activities)
+
 WORKING IN:
 * Waiting suggestions!!
 
@@ -7,8 +11,6 @@ WARNING:
 * android:minSdkVersion="1"
 
 TODO:
-* Redesign images and refactor the names of the sources
-* Re-Organize all the source code
 * Re-Make the widget
 * Re-Make the calendar
 * Add an idea
