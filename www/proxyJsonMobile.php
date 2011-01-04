@@ -18,8 +18,9 @@ require('rss_php.phps');
 $rss = new rss_php();
 
 // stats
+$x = intval(file_get_contents("count.txt"));
 $H = fopen("count.txt", "w");
-fwrite($H, file_get_contents("count.txt"));
+fwrite($H, ($x+1));
 fclose($H);
 
 
@@ -41,8 +42,8 @@ exit;
 
 
 function showIdea() {
-	$str = getContentHttps("https://xifrat.pirata.cat/export.php");
-	// $str = file_get_contents("toString.json"); // testing
+	// $str = getContentHttps("https://xifrat.pirata.cat/export.php");
+	$str = file_get_contents("toString.json");
 	print($str);
 }
 

@@ -26,6 +26,9 @@ import android.widget.ProgressBar;
 
 public class CtrlNet {
 
+	private static String webUrlIdea = "https://xifrat.pirata.cat/ideatorrent";
+	private static String webUrlProxy = "http://m.pirata.cat/request/proxyJsonMobile.php";
+	
 	private static CtrlNet INSTANCE = null;
 	
 	public static CtrlNet getInstance() {
@@ -38,12 +41,12 @@ public class CtrlNet {
 	public void update(ProgressBar pb) throws Exception {
 		if (CtrlDb.getInstance().startUpdate()) {
 			String url, body;
-			url = "http://192.168.1.2/proxy.php?up="+System.currentTimeMillis();
+			url = webUrlProxy+"?up="+System.currentTimeMillis();
 			body = downloadBody(url);
 			CtrlFile.getInstance().saveFile("json", body);
 			pb.setProgress(50);
 			
-			url = "http://192.168.1.2/proxy.php?rss="+System.currentTimeMillis();
+			url = webUrlProxy+"?rss="+System.currentTimeMillis();
 			body = downloadBody(url);
 			CtrlFile.getInstance().saveFile("rss", body);
 			pb.setProgress(100);
@@ -52,7 +55,7 @@ public class CtrlNet {
 	}
 	
 	public String getOnlineComment(Integer id) {
-		return downloadBody("http://192.168.1.2/proxy.php?id=" + String.valueOf(id));
+		return downloadBody(webUrlProxy+"?id=" + String.valueOf(id));
 	}
 	
 	
@@ -60,14 +63,14 @@ public class CtrlNet {
 	
 	public void sendNewComment(String data, Integer iid) {
 		String post = "commennt_text="+data+"&_comment_submitted=true";
-		String url = "https://xifrat.pirata.cat/ideatorrent/idea/"+String.valueOf(iid);
+		String url = webUrlIdea+"/idea/"+String.valueOf(iid);
 		String ret = doPost(url, post);
 		Log.d("-PERFECT-", ret);
 	}
 	
 	public String voteSolution(int rsid, int vote) {
 		String post = "";
-		String url = "https://xifrat.pirata.cat/ideatorrent/ajaxvote/"+rsid+"/"+vote;
+		String url = webUrlIdea+"/ajaxvote/"+rsid+"/"+vote;
 		String ret = doPost(url, post);
 		Log.d("-PERFECT-", ret);
 		return ret;
@@ -79,7 +82,7 @@ public class CtrlNet {
 		if (user.equals("") || pass.equals("")) { return false; }
 
 		String post = "name="+user+"&pass="+pass+"&op=Entra&form_id=user_login_block";
-		String url = "https://xifrat.pirata.cat/ideatorrent?destination=ideatorrent";
+		String url = webUrlIdea+"?destination=ideatorrent";
 		String myToken = doPost(url, post);
 		Log.d("-PERFECT-", myToken);
 
