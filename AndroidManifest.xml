@@ -2,6 +2,7 @@
 <manifest
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	package="cat.pirata.activities"
+	android:installLocation="auto"
 	android:versionCode="3"
 	android:versionName="2.0">
 	<application

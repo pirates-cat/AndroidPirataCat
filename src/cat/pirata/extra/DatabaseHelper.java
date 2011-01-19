@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				"INSERT INTO config (key, value) VALUES ('Username', '')",
 				"INSERT INTO config (key, value) VALUES ('Password', '')",
 				
-				"CREATE TABLE rss (id INTEGER, name TEXT, lastAccess INTEGER, url TEXT, icon INTEGER, enabled INTEGER)",
+				"CREATE TABLE rss (id INTEGER, icon INTEGER)",
 				"INSERT INTO rss (id, icon) VALUES (0, "+ R.drawable.ic_info_bloc +")",
 				"INSERT INTO rss (id, icon) VALUES (1, "+ R.drawable.ic_info_youtube +")",
 				"INSERT INTO rss (id, icon) VALUES (2, "+ R.drawable.ic_info_flickr +")",
