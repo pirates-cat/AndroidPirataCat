@@ -3,7 +3,7 @@
 /**
  *  @license GNU/GPL
  *  @author Sergio Arcos
- *  @date 01/01/2011
+ *  @date 19/01/2011
  * 
  *  -- Ideatorrent proxy v2
  */
@@ -23,27 +23,32 @@ $H = fopen("count.txt", "w");
 fwrite($H, ($x+1));
 fclose($H);
 
-
-if (isset($_GET['up']))
-{
-	showIdea();
+require('cache.php');
+fnxHtmlCache::readCache("[[random_string]]");
+if (!fnxHtmlCache::hayCache()) {
+	
+	if (isset($_GET['up']))
+	{
+		showIdea();
+	}
+	else if (!empty($_GET['id']) && is_numeric($_GET['id']))
+	{
+		showComments($rss, $_GET['id']);
+	}
+	else if (isset($_GET['rss']))
+	{
+		showRSS($rss);
+	}
 }
-else if (!empty($_GET['id']) && is_numeric($_GET['id']))
-{
-	showComments($rss, $_GET['id']);
-}
-else if (isset($_GET['rss']))
-{
-	showRSS($rss);
-}
+fnxHtmlCache::savePage();
 exit;
 
 
 
 
 function showIdea() {
-	// $str = getContentHttps("https://xifrat.pirata.cat/export.php");
-	$str = file_get_contents("toString.json");
+	$str = getContentHttps("[[url_string]]");
+	//$str = file_get_contents("toString.json");
 	print($str);
 }
 
