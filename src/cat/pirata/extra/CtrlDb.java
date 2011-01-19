@@ -41,7 +41,7 @@ public class CtrlDb {
 		return false;
 	}
 
-	public int getIcon(String id) {
+	public int getIcon(Integer id) {
 		String sql = "SELECT icon FROM rss WHERE id="+id+" LIMIT 1";
 		Cursor cr = db.rawQuery(sql, null);
 		int value =  (cr.moveToFirst()) ? cr.getInt(cr.getColumnIndex("icon")) : -1;
@@ -49,7 +49,7 @@ public class CtrlDb {
 		return value;
 	}
 
-	public int getVoted(String id) {
+	public int getVoted(Integer id) {
 		String sql = "SELECT voted FROM solutions WHERE id="+id+" LIMIT 1";
 		Cursor cr = db.rawQuery(sql, null);
 		int value = (cr.moveToFirst()) ? cr.getInt(cr.getColumnIndex("voted")) : -2;
@@ -57,12 +57,12 @@ public class CtrlDb {
 		return value;
 	}
 
-	public void setVoted(int intId, int vote) {
-		String sql, id = String.valueOf(intId);
+	public void setVoted(Integer id, int vote) {
+		String sql;
 		if (getVoted(id) != -2) {
 			sql = "UPDATE solutions SET voted='"+vote+"' WHERE id="+id;
 		} else {
-			sql = "INSERT INTO solutions (id, voted) VALUES ("+intId+","+vote+")";
+			sql = "INSERT INTO solutions (id, voted) VALUES ("+id+","+vote+")";
 		}
 		db.execSQL(sql);
 	}

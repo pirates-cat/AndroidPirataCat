@@ -16,10 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import cat.pirata.activities.R;
-import cat.pirata.extra.AuxTag;
+import cat.pirata.extra.StrAuxTag;
 import cat.pirata.extra.CtrlDb;
 import cat.pirata.extra.CtrlJson;
 import cat.pirata.extra.CtrlNet;
+import cat.pirata.extra.StrComment;
+import cat.pirata.extra.StrIdea;
+import cat.pirata.extra.StrSolution;
 
 public class IdeaTorrent extends Activity {
 
@@ -57,7 +60,7 @@ public class IdeaTorrent extends Activity {
 			Toast.makeText(getBaseContext(), "Autentifica't al menu de sota!", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		AuxTag aux = (AuxTag) v.getTag();
+		StrAuxTag aux = (StrAuxTag) v.getTag();
 		
 		if (CtrlNet.getInstance().voteSolution(aux.rsid, 1).equals("ERROR")) {
 			Toast.makeText(getBaseContext(), "Error procesant el vot! Refresca!", Toast.LENGTH_SHORT).show();
@@ -82,7 +85,7 @@ public class IdeaTorrent extends Activity {
 			Toast.makeText(getBaseContext(), "Autentifica't al menu de sota!", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		AuxTag aux = (AuxTag) v.getTag();
+		StrAuxTag aux = (StrAuxTag) v.getTag();
 		
 		if (CtrlNet.getInstance().voteSolution(aux.rsid, 0).equals("ERROR")) {
 			Toast.makeText(getBaseContext(), "Error procesant el vot! Refresca!", Toast.LENGTH_SHORT).show();
@@ -107,7 +110,7 @@ public class IdeaTorrent extends Activity {
 			Toast.makeText(getBaseContext(), "Autentifica't al menu de sota!", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		AuxTag aux = (AuxTag) v.getTag();
+		StrAuxTag aux = (StrAuxTag) v.getTag();
 		
 		if (CtrlNet.getInstance().voteSolution(aux.rsid, -1).equals("ERROR")) {
 			Toast.makeText(getBaseContext(), "Error procesant el vot! Refresca!", Toast.LENGTH_SHORT).show();
@@ -131,21 +134,18 @@ public class IdeaTorrent extends Activity {
 	
 	
 	private void createList() {
-		SortedSet<Bundle> v = CtrlJson.getInstance().getIdeas(getSTATUS());
+		SortedSet<StrIdea> ssIdea = CtrlJson.getInstance().getIdeas(getSTATUS());
 		
-		for (Bundle b : v) {
-			//Log.d("idea", b.toString());
-			addViewIdea(b);
-			Bundle s = b.getBundle("s");
-			for (String solBundle : s.keySet()) {
-				//Log.d("sol", s.getBundle(solBundle).toString());
-				addViewSolution( s.getBundle(solBundle));
+		for (StrIdea idea : ssIdea) {
+			addViewIdea(idea);
+			for (StrSolution solution : idea.ssbSolution) {
+				addViewSolution(solution);
 			}
 		}
 	}
 
 	
-	private void addViewSolution(Bundle b) {
+	private void addViewSolution(StrSolution solution) {
 		OnClickListener openClose = new OnClickListener() {
 		    public void onClick(View v) {
 		    	TextView tv = (TextView) v.findViewById(R.id.description);
@@ -168,10 +168,10 @@ public class IdeaTorrent extends Activity {
 		
 		TextView tv;
 		ImageButton ib;
-		AuxTag aux = new AuxTag(child, Integer.valueOf(b.getString("sid")));
+		StrAuxTag aux = new StrAuxTag(child, solution.sid);
 		
 		if (getLAYOUTSOLUTION() == R.layout.idea_row_solucio) {
-			int opt = CtrlDb.getInstance().getVoted(b.getString("sid"));
+			int opt = CtrlDb.getInstance().getVoted( solution.sid );
 			
 			ib = (ImageButton) child.findViewById(R.id.icon_up);
 			ib.setTag(aux);
@@ -187,19 +187,19 @@ public class IdeaTorrent extends Activity {
 		}
 		
 		tv = (TextView) child.findViewById(R.id.votes);
-		tv.setText(b.getString("vt"));
+		tv.setText(String.valueOf(solution.votes));
 		
 		tv = (TextView) child.findViewById(R.id.title);
-		tv.setText(b.getString("tt"));
+		tv.setText(solution.title);
 		
 		tv = (TextView) child.findViewById(R.id.description);
-		tv.setText(b.getString("ds"));
+		tv.setText(solution.description);
 		
 		ll.addView(child);
 	}
 	
 	
-	private void addViewIdea(Bundle b) {
+	private void addViewIdea(StrIdea idea) {
 
 		OnClickListener openClose = new OnClickListener() {
 		    public void onClick(View v) {
@@ -224,23 +224,23 @@ public class IdeaTorrent extends Activity {
 				dialog.setContentView(R.layout.idea_dialog_comments);
 				LinearLayout root = (LinearLayout) dialog.findViewById(R.id.root);
 				
-				String jsonStr = CtrlNet.getInstance().getOnlineComment( Integer.valueOf((String) view.getTag()) );
-				SortedSet<Bundle> ss = CtrlJson.getInstance().parseComments(jsonStr);
+				String jsonStr = CtrlNet.getInstance().getOnlineComment( (Integer)view.getTag() );
+				SortedSet<StrComment> ssComment = CtrlJson.getInstance().parseComments(jsonStr);
 				
-				for (Bundle b : ss) {
+				for (StrComment comment : ssComment) {
 					View child = getLayoutInflater().inflate(R.layout.idea_dialog_comment, null);
 					
 					TextView tv;
 					tv = (TextView) child.findViewById(R.id.author);
-					tv.setText(b.getString("author"));
+					tv.setText(comment.author);
 
 					tv = (TextView) child.findViewById(R.id.pubDate);
 					Calendar cal = Calendar.getInstance();
-					cal.setTimeInMillis( Long.valueOf( b.getString("pubDate").concat("000") ) );
+					cal.setTimeInMillis( Long.valueOf( (comment.pubDate).concat("000") ) );
 					tv.setText(String.format("%02d %s", cal.get(Calendar.DATE), calMonth(cal.get(Calendar.MONTH))));
 
 					tv = (TextView) child.findViewById(R.id.description);
-					tv.setText(b.getString("description"));
+					tv.setText(comment.description);
 					
 					root.addView(child);
 				}
@@ -253,9 +253,18 @@ public class IdeaTorrent extends Activity {
 						if (CtrlDb.getInstance().getToken().equals("")) {
 							Toast.makeText(getBaseContext(), "Autentifica't al menu de sota!", Toast.LENGTH_SHORT).show();
 							dialog.cancel();
+							return;
 						}
 						TextView tv = (TextView) dialog.findViewById(R.id.nouComentari);
-						CtrlNet.getInstance().sendNewComment(String.valueOf(tv.getText()), (Integer)v.getTag());
+						try {
+							String text = tv.getText().toString();
+							Integer iid = (Integer) v.getTag();
+							CtrlNet.getInstance().sendNewComment(text, iid);
+						} catch (Exception e) {
+							e.printStackTrace();
+							Toast.makeText(getBaseContext(), "Error desconegut! :(", Toast.LENGTH_SHORT).show();
+						}
+						Toast.makeText(getBaseContext(), "Enviat amb èxit! :)", Toast.LENGTH_SHORT).show();
 						dialog.cancel();
 					}
 				});
@@ -271,7 +280,7 @@ public class IdeaTorrent extends Activity {
 		};
 		
 		View child = getLayoutInflater().inflate(R.layout.idea_row_proposta, null);
-		child.setTag(b.getString("id"));
+		child.setTag(idea.id);
 		child.setClickable(true);
 		child.setLongClickable(true);
 		child.setOnClickListener(openClose);
@@ -280,14 +289,14 @@ public class IdeaTorrent extends Activity {
 		TextView tv;
 		
 		tv = (TextView) child.findViewById(R.id.pubDate);
-		String dt = b.getString("dt");
+		String dt = idea.pubDate;
 		tv.setText(dt.substring(8,10)+" "+calMonth(Integer.valueOf(dt.substring(5,7))-1));
 		
 		tv = (TextView) child.findViewById(R.id.title);
-		tv.setText(String.valueOf(b.getString("tt")));
+		tv.setText(idea.title);
 		
 		tv = (TextView) child.findViewById(R.id.description);
-		tv.setText(String.valueOf(b.getString("ds")));
+		tv.setText(idea.description);
 		
 		ll.addView(child);
 	}

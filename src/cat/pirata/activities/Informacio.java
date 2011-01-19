@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import cat.pirata.extra.CtrlDb;
 import cat.pirata.extra.CtrlJson;
+import cat.pirata.extra.StrRss;
 
 public class Informacio extends Activity {
 	
@@ -35,14 +36,14 @@ public class Informacio extends Activity {
 		Log.d("", "onResume");
 		
 		ll.removeAllViews();
-		SortedSet<Bundle> ss = CtrlJson.getInstance().getRSS();
+		SortedSet<StrRss> ssRss = CtrlJson.getInstance().getRSS();
 
-		for (Bundle b : ss) {
+		for (StrRss rss : ssRss) {
 			View child = getLayoutInflater().inflate(R.layout.info_row, null, false);
-			child.setTag(b.getString("link"));
+			child.setTag(rss.link);
 
 			ImageView iv = (ImageView) child.findViewById(R.id.icon);
-			int icon = CtrlDb.getInstance().getIcon( b.getString("id") );
+			int icon = CtrlDb.getInstance().getIcon( rss.id );
 			if (icon == -1) { icon = R.drawable.icon_error; }
 			iv.setImageResource( icon );
 			
@@ -50,11 +51,11 @@ public class Informacio extends Activity {
 			
 			tv = (TextView) child.findViewById(R.id.date);
 			Calendar cal = Calendar.getInstance();
-			cal.setTimeInMillis(Long.valueOf(b.getString("pubDate").concat("000")));
+			cal.setTimeInMillis(Long.valueOf( (rss.pubDate).concat("000") ));
 			tv.setText(String.format("%02d %s", cal.get(Calendar.DATE), calMonth(cal.get(Calendar.MONTH))));
 
 			tv = (TextView) child.findViewById(R.id.text);
-			tv.setText( b.getString("title") );
+			tv.setText( rss.title );
 			
 			child.setClickable(true);
 			child.setOnClickListener(new openUrlListener());

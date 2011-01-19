@@ -2,8 +2,8 @@ package cat.pirata.extra;
 
 import android.view.View;
 
-public class AuxTag {
-	public AuxTag (View view, int rsid) {
+public class StrAuxTag {
+	public StrAuxTag (View view, int rsid) {
 		this.view = view;
 		this.rsid = rsid;
 	}
