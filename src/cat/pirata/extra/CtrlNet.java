@@ -41,12 +41,12 @@ public class CtrlNet {
 	public void update(ProgressBar pb) throws Exception {
 		if (CtrlDb.getInstance().startUpdate()) {
 			String url, body;
-			url = webUrlProxy+"?up="+System.currentTimeMillis();
+			url = webUrlProxy+"?up";
 			body = downloadBody(url);
 			CtrlFile.getInstance().saveFile("json", body);
 			pb.setProgress(50);
 			
-			url = webUrlProxy+"?rss="+System.currentTimeMillis();
+			url = webUrlProxy+"?rss";
 			body = downloadBody(url);
 			CtrlFile.getInstance().saveFile("rss", body);
 			pb.setProgress(100);
