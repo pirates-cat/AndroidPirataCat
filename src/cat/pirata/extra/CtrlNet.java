@@ -46,7 +46,7 @@ public class CtrlNet {
 			CtrlFile.getInstance().saveFile("json", body);
 			pb.setProgress(50);
 			
-			url = webUrlProxy+"?rss?lang=cat";
+			url = webUrlProxy+"?rss&lang=cat";
 			body = downloadBody(url);
 			CtrlFile.getInstance().saveFile("rss", body);
 			pb.setProgress(100);
