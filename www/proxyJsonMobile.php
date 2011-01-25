@@ -34,7 +34,7 @@ $_SERVER['REQUEST_URI'] = substr($q, 0, strlen($q)-1);
 ////////////
 
 require('cache.php');
-fnxHtmlCache::readCache("");
+fnxHtmlCache::readCache("[[random_string]]");
 if (!fnxHtmlCache::hayCache()) {
 	
 	if (isset($_GET['up']))
@@ -57,8 +57,8 @@ exit;
 
 
 function showIdea() {
-	//$str = getContentHttps("https://xifrat.pirata.cat/ideatorrent2json.php");
-	$str = file_get_contents("toString.json");
+	$str = getContentHttps("[[url_string]]");
+	//$str = file_get_contents("toString.json");
 	print($str);
 }
 
