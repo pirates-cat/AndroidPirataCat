@@ -23,8 +23,18 @@ $H = fopen("count.txt", "w");
 fwrite($H, ($x+1));
 fclose($H);
 
+//////////// APANYO
+$url = parse_url($_SERVER['REQUEST_URI']);
+parse_str($url['query'], $query);
+if (isset($query['rss']) && !empty($query['rss']))
+	$query['rss'] = null;
+$q = "";
+foreach ($query as $k => $v) { $q = "$q$k=$v&"; }
+$_SERVER['REQUEST_URI'] = substr($q, 0, strlen($q)-1);
+////////////
+
 require('cache.php');
-fnxHtmlCache::readCache("[[random_string]]");
+fnxHtmlCache::readCache("");
 if (!fnxHtmlCache::hayCache()) {
 	
 	if (isset($_GET['up']))
@@ -37,7 +47,7 @@ if (!fnxHtmlCache::hayCache()) {
 	}
 	else if (isset($_GET['rss']))
 	{
-		showRSS($rss);
+		showRSS($rss, $_GET['lang']);
 	}
 }
 fnxHtmlCache::savePage();
@@ -47,8 +57,8 @@ exit;
 
 
 function showIdea() {
-	$str = getContentHttps("[[url_string]]");
-	//$str = file_get_contents("toString.json");
+	//$str = getContentHttps("https://xifrat.pirata.cat/ideatorrent2json.php");
+	$str = file_get_contents("toString.json");
 	print($str);
 }
 
@@ -76,12 +86,24 @@ function showComments($rss, $id) {
 }
 
 
-function showRSS($rss) {
-	$urls = array(
-		'http://pirata.cat/bloc/?feed=rss2',
-		'http://gdata.youtube.com/feeds/base/users/PiratesdeCatalunyaTV/uploads?alt=rss&v=2&orderby=published',
-		'http://api.flickr.com/services/feeds/groups_pool.gne?id=1529563@N23&lang=es-es&format=rss_200'
-	);
+function showRSS($rss, $lang) {
+	if ($lang == 'es')
+	{
+		$urls = array(
+			0 => 'https://www.partidopirata.es/noticias?format=feed&type=rss',
+			3 => 'http://www.nacionred.com/tag/partido-pirata/rss2.xml'
+		);
+	}
+	else
+	{
+		$urls = array(
+			0 => 'http://pirata.cat/bloc/?feed=rss2',
+			1 => 'http://gdata.youtube.com/feeds/base/users/PiratesdeCatalunyaTV/uploads?alt=rss&v=2&orderby=published',
+			2 => 'http://api.flickr.com/services/feeds/groups_pool.gne?id=1529563@N23&lang=es-es&format=rss_200',
+			3 => 'http://www.nacionred.com/tag/partido-pirata/rss2.xml'
+		);
+	}
+	
 	$V = array();
 	foreach ($urls as $key => $url) {
 		$rssStr = getContentHttps($url);

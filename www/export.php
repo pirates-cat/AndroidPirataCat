@@ -1,7 +1,4 @@
 <?php
-
-// This file should go in your ideatorrent server
-
 $arr = array();
 $id = array();
 
