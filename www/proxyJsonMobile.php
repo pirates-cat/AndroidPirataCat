@@ -9,19 +9,20 @@
  */
  
 error_reporting(0);
-set_time_limit(5);
-
+set_time_limit(10);
 
 ///	RSS_PHP - the PHP DOM based RSS Parser
 ///	Author: <rssphp.net>
-require('rss_php.phps');
+require('rss_php.php');
 $rss = new rss_php();
 
 // stats
+/*
 $x = intval(file_get_contents("count.txt"));
 $H = fopen("count.txt", "w");
 fwrite($H, ($x+1));
 fclose($H);
+*/
 
 //////////// APANYO
 $url = parse_url($_SERVER['REQUEST_URI']);
@@ -57,7 +58,7 @@ exit;
 
 
 function showIdea() {
-	$str = getContentHttps("[[url_string]]");
+	$str = getContentHttps("https://xifrat.pirata.cat/ideatorrent2json.php");
 	//$str = file_get_contents("toString.json");
 	print($str);
 }
@@ -146,5 +147,3 @@ function getContentHttps($url) {
 	
 	return $res;
 }
-
-?>

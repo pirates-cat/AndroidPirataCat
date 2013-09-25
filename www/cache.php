@@ -6,7 +6,7 @@ class genCTs {
 	const HTML_CACHE = true;
 	const HTML_CACHE_LIFETIME = 1200; // tiempo en segundos de duracion del cache
 	const HTML_CACHE_VERBOSE = false; // si lo habilitamos, sabremos que esta ocurriendo.
-	const HTML_CACHE_SAVEPATH = "/path/"; // ruta absoluta donde se guardara el cache.
+	const HTML_CACHE_SAVEPATH = "/var/www/clients/client14/web30/web/request/path/"; // ruta absoluta donde se guardara el cache.
 }
 /**
  * fnxHtmlCache: cache de pagina completa.

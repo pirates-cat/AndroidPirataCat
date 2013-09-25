@@ -153,8 +153,5 @@ class rss_php {
 			)
 		);
 		return stream_context_create($contextOptions);
-	}
-	
+	}	
 }
-
-?>
