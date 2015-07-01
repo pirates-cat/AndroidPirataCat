@@ -4,7 +4,6 @@
 	<string name="sourcecode">https://github.com/m13/AndroidPirataCat</string>
     <string name="license">GPL</string>
     <string name="version">2.0</string>
-    <string name="hello">Hello World, pirates!</string>
     
     <string name="app_name">Pirates de Catalunya</string>
     <string name="partit_nom_llarg">Pirates de Catalunya</string>
