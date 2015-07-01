@@ -69,9 +69,9 @@ public class PartitPirata extends TabActivity {
 		};
 		
 		String[] classesStr = new String[] {
-			"Participació",
-			"Informació",
-			"Calendari"
+			getString(R.string.Participacio),
+			getString(R.string.Informacio),
+			getString(R.string.Calendari)
 		};
 		
 		for (int i = 0; i < classes.length; i++) {

@@ -14,6 +14,9 @@
 	<string name="benvinguda3">\nProu de promeses de canvi que no canvien res! Ajuda\'ns a canviar el joc!\n</string>
 	<string name="quisom">Qui som?</string>
     <string name="entrar">Benvingut!</string>
+    <string name="Participacio">Participació</string>
+    <string name="Informacio">Informació</string>
+    <string name="Calendari">Calendari</string>
     
     
 </resources>
