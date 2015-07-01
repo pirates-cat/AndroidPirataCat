@@ -1,7 +1,9 @@
 package cat.pirata.activities;
 
-import android.app.Dialog;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,8 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -24,8 +24,9 @@ import cat.pirata.ideatorrent.IdeaWaiting;
 
 public class Participacio extends TabActivity {
 
-	private Dialog dialog;
+	private AlertDialog dialog;
 	
+	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -96,34 +97,38 @@ public class Participacio extends TabActivity {
 	}
 
 	private void loguejarDialog() {
-		dialog = new Dialog(this);
-		dialog.setContentView(R.layout.idea_dialog_loguejar);
-		dialog.setTitle("Dades personals");
-		
-		Button button;
-		button = (Button) dialog.findViewById(R.id.ok);
-		button.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				EditText etu = (EditText) dialog.findViewById(R.id.user);
-				EditText etp = (EditText) dialog.findViewById(R.id.pass);
-				
-				CtrlDb.getInstance().setUserPass(etu.getText().toString(), etp.getText().toString());
-				if (CtrlNet.getInstance().tryAuth()) {
-					Toast.makeText(getBaseContext(), "Fet! :-)", Toast.LENGTH_LONG).show();
-				} else {
-					Toast.makeText(getBaseContext(), "Error! :-(", Toast.LENGTH_LONG).show();
-				}
-				dialog.cancel();
-			}
-		});
+	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    // Get the layout inflater
+	    LayoutInflater inflater = getLayoutInflater();
+	    final View alertView = inflater.inflate(R.layout.idea_dialog_loguejar, null);
 
-		button = (Button) dialog.findViewById(R.id.cancel);
-		button.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				dialog.cancel();
-			}
-		});
-		
+	    // Inflate and set the layout for the dialog
+	    // Pass null as the parent view because its going in the dialog layout
+	    builder.setView(alertView)
+	    // Add action buttons
+	           .setPositiveButton(R.string.menu_connectar, new DialogInterface.OnClickListener() {
+	               @Override
+	               public void onClick(DialogInterface dialog, int id) {
+	                   // sign in the user ...
+	   				EditText etu = (EditText) alertView.findViewById(R.id.user);
+					EditText etp = (EditText) alertView.findViewById(R.id.pass);
+					
+					CtrlDb.getInstance().setUserPass(etu.getText().toString(), etp.getText().toString());
+					if (CtrlNet.getInstance().tryAuth()) {
+						Toast.makeText(getBaseContext(), "Fet! :-)", Toast.LENGTH_LONG).show();
+					} else {
+						Toast.makeText(getBaseContext(), "Error! :-(", Toast.LENGTH_LONG).show();
+					}
+	               }
+	           })
+	           .setNegativeButton("Cancela", new DialogInterface.OnClickListener() {
+	               public void onClick(DialogInterface dialog, int id) {
+	            	   // Android cancela el diàleg quan cliquem qualsevol botó
+	               }
+	           })
+	           .setTitle("Dades personals");
+
+		dialog = builder.create();
 		dialog.show();
 	}
 
@@ -131,6 +136,6 @@ public class Participacio extends TabActivity {
 		// TODO preguntar si quiere borrar datos bd
 		CtrlDb.getInstance().setToken("");
 		CtrlDb.getInstance().setUserPass("","");
-		Toast.makeText(getBaseContext(), "Usuari, contrasenya i sessi� esborrats!", Toast.LENGTH_LONG).show();
+		Toast.makeText(getBaseContext(), "Usuari, contrasenya i sessió esborrats!", Toast.LENGTH_LONG).show();
 	}
 }
