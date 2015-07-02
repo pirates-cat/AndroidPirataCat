@@ -54,6 +54,86 @@ public class IdeaTorrent extends Activity {
 		createList();
 	}
 
+
+	// VOTING
+	public void voteUp (View v) {
+		if (CtrlDb.getInstance().getToken().equals("")) {
+			Toast.makeText(getBaseContext(), "Autentifica't al menu de sota!", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		StrAuxTag aux = (StrAuxTag) v.getTag();
+		
+		if (CtrlNet.getInstance().voteSolution(aux.rsid, 1).equals("ERROR")) {
+			Toast.makeText(getBaseContext(), "Error procesant el vot! Refresca!", Toast.LENGTH_SHORT).show();
+			return;
+		} else {
+			Toast.makeText(getBaseContext(), "Vot confirmat!", Toast.LENGTH_SHORT).show();
+		}
+		
+		ImageButton ib;
+		ib = (ImageButton) aux.view.findViewById(R.id.icon_up);
+		ib.setImageResource(R.drawable.idea_up_color);
+		ib = (ImageButton) aux.view.findViewById(R.id.icon_eq);
+		ib.setImageResource(R.drawable.idea_equal_grey);
+		ib = (ImageButton) aux.view.findViewById(R.id.icon_down);
+		ib.setImageResource(R.drawable.idea_down_grey);
+
+		CtrlDb.getInstance().setVoted(aux.rsid, 1);
+	}
+	
+	public void voteEqual (View v) {
+		if (CtrlDb.getInstance().getToken().equals("")) {
+			Toast.makeText(getBaseContext(), "Autentifica't al menu de sota!", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		StrAuxTag aux = (StrAuxTag) v.getTag();
+		
+		if (CtrlNet.getInstance().voteSolution(aux.rsid, 0).equals("ERROR")) {
+			Toast.makeText(getBaseContext(), "Error procesant el vot! Refresca!", Toast.LENGTH_SHORT).show();
+			return;
+		} else {
+			Toast.makeText(getBaseContext(), "Vot confirmat!", Toast.LENGTH_SHORT).show();
+		}
+		
+		ImageButton ib;
+		ib = (ImageButton) aux.view.findViewById(R.id.icon_up);
+		ib.setImageResource(R.drawable.idea_up_grey);
+		ib = (ImageButton) aux.view.findViewById(R.id.icon_eq);
+		ib.setImageResource(R.drawable.idea_equal_color);
+		ib = (ImageButton) aux.view.findViewById(R.id.icon_down);
+		ib.setImageResource(R.drawable.idea_down_grey);
+
+		CtrlDb.getInstance().setVoted(aux.rsid, 0);
+	}
+	
+	public void voteDown (View v) {
+		if (CtrlDb.getInstance().getToken().equals("")) {
+			Toast.makeText(getBaseContext(), "Autentifica't al menu de sota!", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		StrAuxTag aux = (StrAuxTag) v.getTag();
+		
+		if (CtrlNet.getInstance().voteSolution(aux.rsid, -1).equals("ERROR")) {
+			Toast.makeText(getBaseContext(), "Error procesant el vot! Refresca!", Toast.LENGTH_SHORT).show();
+			return;
+		} else {
+			Toast.makeText(getBaseContext(), "Vot confirmat!", Toast.LENGTH_SHORT).show();
+		}
+		
+		ImageButton ib;
+		ib = (ImageButton) aux.view.findViewById(R.id.icon_up);
+		ib.setImageResource(R.drawable.idea_up_grey);
+		ib = (ImageButton) aux.view.findViewById(R.id.icon_eq);
+		ib.setImageResource(R.drawable.idea_equal_grey);
+		ib = (ImageButton) aux.view.findViewById(R.id.icon_down);
+		ib.setImageResource(R.drawable.idea_down_color);
+
+		CtrlDb.getInstance().setVoted(aux.rsid, -1);
+	}
+	// */
+	
+	
+	
 	private void createList() {
 		SortedSet<StrIdea> ssIdea = CtrlJson.getInstance().getIdeas(getSTATUS());
 		
@@ -185,7 +265,7 @@ public class IdeaTorrent extends Activity {
 							e.printStackTrace();
 							Toast.makeText(getBaseContext(), "Error desconegut! :(", Toast.LENGTH_SHORT).show();
 						}
-						Toast.makeText(getBaseContext(), "Enviat amb Ã¨xit! :)", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getBaseContext(), "Enviat amb èxit! :)", Toast.LENGTH_SHORT).show();
 						dialog.cancel();
 					}
 				});
