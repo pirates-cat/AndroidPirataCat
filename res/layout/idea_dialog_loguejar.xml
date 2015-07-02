@@ -5,51 +5,18 @@
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent">
 	
-	<LinearLayout
-		android:orientation="horizontal"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent" >
-		<TextView
-			android:layout_height="wrap_content"
-	    	android:layout_width="120sp" 
-			android:gravity="center_horizontal"
-			android:textSize="16sp"
-			android:text="Usuari: " />
-		<EditText
-			android:id="@+id/user"
-			android:layout_height="wrap_content"
-	    	android:layout_width="80sp" 
-			android:gravity="left"
-			android:textSize="16sp" />
-	</LinearLayout>
-	
-	<LinearLayout
-		android:orientation="horizontal"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent" >
-		<TextView
-			android:layout_height="wrap_content"
-	    	android:layout_width="120sp" 
-			android:gravity="center_horizontal"
-			android:textSize="16sp"
-			android:text="Contrasenya: " />
-		<EditText
-			android:id="@+id/pass"
-			android:layout_height="wrap_content"
-	    	android:layout_width="80sp" 
-			android:gravity="left"
-			android:password="true"
-			android:textSize="16sp" />
-	</LinearLayout>
-	
-	<Button
-		android:id="@+id/ok"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:text="Loguejar" />
-	<Button
-		android:id="@+id/cancel"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:text="Cancelar" />
+	<EditText
+        android:id="@+id/user"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        style="@style/loguejar_camps"
+        android:hint="@string/login_usuari"/>
+
+    <EditText
+        android:id="@+id/pass"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        style="@style/loguejar_camps"
+        android:hint="@string/login_password" />
+
 </LinearLayout>

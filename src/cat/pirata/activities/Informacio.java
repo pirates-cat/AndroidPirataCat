@@ -17,6 +17,7 @@ import android.widget.TextView;
 import cat.pirata.extra.CtrlDb;
 import cat.pirata.extra.CtrlJson;
 import cat.pirata.extra.StrRss;
+import cat.pirata.extra.Utils;
 
 public class Informacio extends Activity {
 	
@@ -52,7 +53,7 @@ public class Informacio extends Activity {
 			tv = (TextView) child.findViewById(R.id.date);
 			Calendar cal = Calendar.getInstance();
 			cal.setTimeInMillis(Long.valueOf( (rss.pubDate).concat("000") ));
-			tv.setText(String.format("%02d %s", cal.get(Calendar.DATE), calMonth(cal.get(Calendar.MONTH))));
+			tv.setText(String.format("%02d %s", cal.get(Calendar.DATE), Utils.calMonth(cal.get(Calendar.MONTH))));
 
 			tv = (TextView) child.findViewById(R.id.text);
 			tv.setText( rss.title );
@@ -64,12 +65,6 @@ public class Informacio extends Activity {
 		}
 	}	
 
-	private String calMonth(int i) {
-		String[] day = new String[] {
-				"Gen","Feb","Mar","Abr","Mai","Jun","Jul","Ago","Set","Oct","Nov","Dec"};
-		return day[i];
-	}
-	
 	class openUrlListener implements OnClickListener {
 		@Override
 		public void onClick(View view) {

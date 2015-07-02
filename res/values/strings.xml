@@ -4,7 +4,6 @@
 	<string name="sourcecode">https://github.com/m13/AndroidPirataCat</string>
     <string name="license">GPL</string>
     <string name="version">2.0</string>
-    <string name="hello">Hello World, pirates!</string>
     
     <string name="app_name">Pirates de Catalunya</string>
     <string name="partit_nom_llarg">Pirates de Catalunya</string>
@@ -15,6 +14,14 @@
 	<string name="benvinguda3">\nProu de promeses de canvi que no canvien res! Ajuda\'ns a canviar el joc!\n</string>
 	<string name="quisom">Qui som?</string>
     <string name="entrar">Benvingut!</string>
+    <string name="Participacio">Participació</string>
+    <string name="Informacio">Informació</string>
+    <string name="Calendari">Calendari</string>
+    <string name="menu_actualitzar">Actualitzar</string>
+    <string name="menu_connectar">Connectar</string>
+    <string name="menu_desconnectar">Desconnectar</string>
+    <string name="login_usuari">Usuari</string>
+    <string name="login_password">Contrassenya</string>
     
     
 </resources>

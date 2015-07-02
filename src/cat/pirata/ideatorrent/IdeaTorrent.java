@@ -23,6 +23,7 @@ import cat.pirata.extra.CtrlNet;
 import cat.pirata.extra.StrComment;
 import cat.pirata.extra.StrIdea;
 import cat.pirata.extra.StrSolution;
+import cat.pirata.extra.Utils;
 
 public class IdeaTorrent extends Activity {
 
@@ -237,7 +238,7 @@ public class IdeaTorrent extends Activity {
 					tv = (TextView) child.findViewById(R.id.pubDate);
 					Calendar cal = Calendar.getInstance();
 					cal.setTimeInMillis( Long.valueOf( (comment.pubDate).concat("000") ) );
-					tv.setText(String.format("%02d %s", cal.get(Calendar.DATE), calMonth(cal.get(Calendar.MONTH))));
+					tv.setText(String.format("%02d %s", cal.get(Calendar.DATE), Utils.calMonth(cal.get(Calendar.MONTH))));
 
 					tv = (TextView) child.findViewById(R.id.description);
 					tv.setText(comment.description);
@@ -290,7 +291,7 @@ public class IdeaTorrent extends Activity {
 		
 		tv = (TextView) child.findViewById(R.id.pubDate);
 		String dt = idea.pubDate;
-		tv.setText(dt.substring(8,10)+" "+calMonth(Integer.valueOf(dt.substring(5,7))-1));
+		tv.setText(dt.substring(8,10)+" "+Utils.calMonth(Integer.valueOf(dt.substring(5,7))-1));
 		
 		tv = (TextView) child.findViewById(R.id.title);
 		tv.setText(idea.title);
@@ -299,11 +300,5 @@ public class IdeaTorrent extends Activity {
 		tv.setText(idea.description);
 		
 		ll.addView(child);
-	}
-	
-	private String calMonth(int i) {
-		String[] day = new String[] {
-				"Gen","Feb","Mar","Abr","Mai","Jun","Jul","Ago","Set","Oct","Nov","Dec"};
-		return day[i];
 	}
 }
